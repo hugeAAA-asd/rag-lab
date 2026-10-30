@@ -1,0 +1,404 @@
+{
+ "能感知环境并自主采取行动的系统，指的是什么？": [
+  "自主感知环境并采取行动的系统 定义",
+  "环境感知 自主决策 行动执行 系统 概念",
+  "autonomous system perceiving environment and taking actions definition"
+ ],
+ "用什么框架来描述一个智能体的任务环境？": [
+  "智能体任务环境描述框架",
+  "agent task environment description framework",
+  "智能体环境建模框架 任务环境表示"
+ ],
+ "任务环境里的性能度量、环境、执行器、传感器这四个东西合起来叫什么？": [
+  "任务环境中的性能度量、环境、执行器、传感器四要素合称什么",
+  "任务环境（task environment）中性能度量（performance measure）、环境（environment）、执行器（actuators）、传感器（sensors）的统称是什么",
+  "智能体任务环境四要素：性能度量、环境、执行器、传感器合起来叫什么"
+ ],
+ "智能体内部「先想、再动手、再看结果」这个循环怎么称呼？": [
+  "智能体内部「先想、再动手、再看结果」的循环在技术资料中通常称为什么？",
+  "智能体（Agent）中「思考-行动-观察」循环的专业术语是什么？",
+  "Agent 的「先思考、再执行、再观察结果」这一过程对应的英文名称或缩写是什么？"
+ ],
+ "实际应用里，智能体跟人的关系可以分成哪两种角色？": [
+  "智能体与人类交互中的角色分类 实际应用场景",
+  "agent-human interaction role taxonomy practical applications",
+  "智能体 人类 两种角色 划分 实际应用"
+ ],
+ "早期认为智能可以用符号和逻辑形式化表达的流派叫什么？": [
+  "符号主义人工智能（Symbolic AI）的早期定义与逻辑形式化表达",
+  "早期人工智能中主张智能可通过符号和逻辑形式化表达的流派名称",
+  "Symbolicism 在人工智能中的早期观点：用符号系统与逻辑表示智能"
+ ],
+ "麻省理工那个模拟心理治疗师说话的早期聊天程序叫什么？": [
+  "MIT早期心理治疗师模拟聊天程序名称",
+  "ELIZA 麻省理工学院 心理治疗师 聊天程序",
+  "Weizenbaum ELIZA chatbot Rogerian therapist MIT"
+ ],
+ "谁提出智能来自许多简单个体协作，而不是一个中心推理引擎？": [
+  "群体智能 涌现 去中心化 无中心推理引擎 提出者",
+  "swarm intelligence emergent behavior decentralized no central reasoning engine proponent",
+  "多智能体协作 简单个体 涌现智能 分布式认知 理论提出者"
+ ],
+ "智能从「人工设计规则」转向「从数据里学」的转折是怎么发生的？": [
+  "人工智能从基于规则的系统向数据驱动学习的范式转变是如何发生的？",
+  "AI从专家系统向机器学习转型的关键历史节点与技术动因是什么？",
+  "人工智能发展史上从符号主义到连接主义的范式转换过程及标志性事件是什么？"
+ ],
+ "最早靠前面几个词来预测下一个词的模型是怎么做的？": [
+  "基于前几个词预测下一个词的语言模型是如何实现的",
+  "早期 n-gram 语言模型如何利用前文词语预测下一个词",
+  "自回归语言模型（Autoregressive Language Model）基于前缀词预测下一词的建模方法"
+ ],
+ "和模型沟通时，怎么设计输入措辞才拿到想要的输出？": [
+  "大语言模型提示词设计：如何通过输入措辞优化获得期望输出",
+  "LLM prompt engineering：输入表述设计对模型输出质量的影响",
+  "模型交互中的 prompt 构造与措辞策略：提升输出可控性的方法"
+ ],
+ "模型越大能力越强，这个规律叫什么？它有什么代价？": [
+  "缩放定律 scaling law 模型规模与能力关系",
+  "Scaling Laws 大模型性能随参数量提升的规律及计算成本代价",
+  "模型规模增大能力增强的规律名称 缩放定律 及其资源开销"
+ ],
+ "一边推理一边调用工具的范式是怎么运作的？": [
+  "推理与工具调用交替进行的范式是如何工作的",
+  "interleaved reasoning and tool use paradigm 工作机制",
+  "ReAct 范式 推理 行动 工具调用 循环 原理"
+ ],
+ "先把任务拆成完整计划、再一步步执行，这种范式叫什么？": [
+  "任务分解与执行分离的规划范式是什么",
+  "plan-and-execute 范式 任务规划 分步执行",
+  "任务拆解为完整计划后逐步执行 的范式名称 规划与执行解耦"
+ ],
+ "智能体生成答案之后，怎么自我批评并改进？": [
+  "智能体生成答案后的自我批评与改进机制（self-critique and refinement）",
+  "LLM agent 答案生成后的自我反思与迭代优化（self-reflection and iterative refinement）",
+  "智能体输出答案后的自我评估与修正方法（self-evaluation and correction）"
+ ],
+ "书里介绍了哪几个可视化拖拽搭建智能体的低代码平台？": [
+  "可视化拖拽式智能体低代码平台有哪些",
+  "低代码智能体构建平台的可视化拖拽功能",
+  "智能体开发平台 可视化编排 低代码"
+ ],
+ "两个低代码智能体平台之间该怎么选？": [
+  "低代码智能体平台选型对比 评估维度 技术指标",
+  "Low-code AI agent platform comparison selection criteria",
+  "低代码AI智能体平台 选型 功能对比 性能 集成能力 成本"
+ ],
+ "哪个平台是开源的，还融合了后端即服务和 LLMOps 理念？": [
+  "开源平台 后端即服务 Backend-as-a-Service BaaS LLMOps 集成",
+  "开源 融合 后端即服务 BaaS LLMOps 平台",
+  "开源 LLMOps 后端即服务 BaaS 一体化 平台"
+ ],
+ "哪个平台核心定位是知识库问答和 RAG？": [
+  "知识库问答与RAG平台的核心定位是什么",
+  "哪个平台以知识库问答和检索增强生成（RAG）为核心定位",
+  "知识库问答和RAG（Retrieval-Augmented Generation）平台的核心定位对比"
+ ],
+ "哪个平台本质上是通用工作流自动化、大模型只是其中一环？": [
+  "通用工作流自动化平台 大模型作为组件 集成",
+  "workflow automation platform LLM as a component integration",
+  "通用工作流自动化引擎 大模型仅为一环 平台架构"
+ ],
+ "用状态图来编排智能体流程的框架是哪个？": [
+  "基于状态图的智能体流程编排框架",
+  "state graph based agent workflow orchestration framework",
+  "智能体工作流编排 状态机 框架 StateGraph"
+ ],
+ "哪个框架的设计哲学是「用对话驱动多角色协作」？": [
+  "对话驱动多角色协作框架的设计哲学",
+  "conversation-driven multi-agent collaboration framework design philosophy",
+  "多角色协作对话系统 框架设计理念 multi-agent"
+ ],
+ "阿里达摩院做的、强调工程化和高可靠的多智能体平台是哪个？": [
+  "阿里达摩院 多智能体平台 工程化 高可靠",
+  "Alibaba DAMO Academy multi-agent platform engineering high reliability",
+  "达摩院 多智能体系统 工程化 可靠性 平台"
+ ],
+ "只靠两个智能体角色扮演、几乎不要人干预就能解决问题的框架？": [
+  "双智能体角色扮演框架 低人工干预 问题求解",
+  "two-agent role-playing framework minimal human intervention problem solving",
+  "多智能体协作 双角色扮演 自主问题解决 框架"
+ ],
+ "市面上已经有那么多框架了，为什么还要自己造一个？": [
+  "自研框架的必要性 现有框架局限性 定制化需求",
+  "为什么选择自研框架 而非使用现有框架 技术选型分析",
+  "自建框架 vs 开源框架 优缺点对比 重复造轮子争议"
+ ],
+ "框架里怎么统一管理一大堆工具，让模型知道有哪些可用？": [
+  "LLM 框架中工具（Tools）的统一注册与发现机制",
+  "Agent 框架如何集中管理工具集（Tool Registry）并向模型暴露可用工具列表",
+  "大模型应用中工具管理（Tool Management）与函数调用（Function Calling）的工具清单注入方式"
+ ],
+ "智能体的长期记忆借鉴了哪些认知科学的结论？": [
+  "智能体长期记忆 认知科学 理论借鉴",
+  "智能体长期记忆机制 认知科学 研究结论",
+  "Agent long-term memory cognitive science inspiration"
+ ],
+ "记忆系统整体上是按什么流程运转的？": [
+  "记忆系统 整体流程 运转机制",
+  "记忆系统 工作流程 架构设计",
+  "记忆系统 信息处理流程 运行机制"
+ ],
+ "先检索外部资料再让模型生成答案，这套做法叫什么？": [
+  "检索增强生成（Retrieval-Augmented Generation, RAG）的定义与流程",
+  "先检索外部知识再生成答案的模型架构叫什么",
+  "RAG（Retrieval-Augmented Generation）检索增强生成方法"
+ ],
+ "上下文工程和以前说的提示工程，差别在哪？": [
+  "上下文工程与提示工程的区别",
+  "Context Engineering 与 Prompt Engineering 的差异对比",
+  "上下文工程和提示工程在概念与方法上的不同"
+ ],
+ "上下文塞得太长，模型反而变糊涂，这个现象叫什么？": [
+  "长上下文导致大模型性能下降的现象叫什么",
+  "context length 增加导致 LLM 性能退化 术语",
+  "长上下文窗口 模型准确率下降 lost in the middle 现象名称"
+ ],
+ "长时程任务里，用什么工具以 Markdown + YAML 记录进度和结论？": [
+  "长时程任务 进度记录 结论记录 Markdown YAML 工具",
+  "long-horizon task progress tracking conclusion logging Markdown YAML tool",
+  "长时程任务 任务日志 结构化记录 Markdown front matter YAML 进度与结论"
+ ],
+ "智能体怎么像插 USB-C 一样接入各种各样的外部工具？": [
+  "智能体（Agent）如何通过标准化接口（如 MCP、Function Calling）像 USB-C 一样接入各种外部工具（External Tools）？",
+  "AI Agent 接入外部工具（Tool Use）的标准化协议与即插即用（Plug-and-Play）集成方案是什么？",
+  "智能体（Agent）如何实现对外部工具（External Tools/APIs）的统一接入与互操作性（Interoperability）？"
+ ],
+ "智能体和智能体之间直接通信协作，靠的是什么协议？": [
+  "智能体间直接通信协作协议",
+  "Agent-to-Agent communication protocol",
+  "多智能体系统通信协议与协作机制"
+ ],
+ "面向大规模开放网络环境做智能体管理的协议是哪个？": [
+  "面向大规模开放网络环境的智能体管理协议",
+  "大规模开放网络环境下的智能体管理协议标准",
+  "open network environment large-scale agent management protocol"
+ ],
+ "不训练价值网络、靠组内相对比较的强化学习方法叫什么？": [
+  "不训练价值网络、基于组内相对比较的强化学习方法叫什么",
+  "无需价值网络的组内相对比较强化学习方法",
+  "组内相对比较的强化学习方法"
+ ],
+ "正式强化学习之前，那个让模型先学会输出格式的步骤是什么？": [
+  "强化学习前的监督微调（Supervised Fine-Tuning, SFT）阶段是什么",
+  "大模型RLHF流程中让模型学习输出格式的指令微调步骤叫什么",
+  "正式强化学习前使模型掌握输出格式的预训练对齐阶段是什么"
+ ],
+ "怎么衡量一个模型的函数调用能力？": [
+  "如何评估大语言模型的函数调用能力（Function Calling）？",
+  "LLM 工具调用（Tool Calling）能力的评测指标与基准测试（Benchmark）有哪些？",
+  "模型 API 调用（API Invocation）与结构化输出（Structured Output）能力的量化评估方法"
+ ],
+ "评估通用 AI 助手解决真实世界问题的基准是哪个？": [
+  "通用 AI 助手真实世界问题解决能力评估基准是什么",
+  "通用人工智能助手 real-world problem solving 评估 benchmark",
+  "general AI assistant real-world task benchmark evaluation"
+ ],
+ "旅行助手为什么不直接调地图 API，而要包一层协议？": [
+  "旅行助手不直接调用地图 API 而封装协议层的原因",
+  "AI travel assistant 地图 API 调用与协议封装架构设计",
+  "旅行助手 地图服务 协议适配层 封装 优势"
+ ],
+ "深度研究任务怎么拆成一堆子任务逐个完成？": [
+  "深度研究任务分解为子任务并逐个完成的策略",
+  "deep research task decomposition into subtasks and sequential execution",
+  "复杂研究问题拆解为可执行子任务的工作流方法"
+ ],
+ "NPC 对玩家的态度怎么用数值分级？": [
+  "NPC 对玩家态度数值分级方法",
+  "NPC 好感度数值分级设计",
+  "NPC attitude rating system numerical scale"
+ ],
+ "想做一个拿得出手的项目，选题有什么原则？": [
+  "项目选题原则 技术资料库 项目设计 选题策略 可行性评估",
+  "project topic selection principles technical documentation project design topic strategy feasibility assessment",
+  "拿得出手的项目 选题原则 项目选题 技术资料库 项目设计 选题策略 可行性评估"
+ ],
+ "智能体是什么？": [
+  "智能体（Agent）的定义与技术架构",
+  "AI Agent 智能体的核心概念与工作原理",
+  "智能体在人工智能领域的专业术语解释及英文缩写"
+ ],
+ "智能体": [
+  "智能体 agent 技术架构与实现",
+  "智能体 agent 应用场景与案例",
+  "智能体 agent 开发框架与工具"
+ ],
+ "缩放法则是什么？": [
+  "缩放法则 scaling law 定义",
+  "scaling law 缩放法则 机器学习",
+  "神经网络 缩放法则 scaling law 原理"
+ ],
+ "缩放法则": [
+  "缩放定律 scaling law 机器学习",
+  "scaling law 模型性能与参数量数据量计算量的关系",
+  "神经网络 scaling laws 幂律关系 大模型"
+ ],
+ "ReAct 是什么？": [
+  "ReAct 框架是什么",
+  "ReAct prompting 是什么",
+  "ReAct 智能体 是什么"
+ ],
+ "ReAct": [
+  "ReAct 框架 检索增强生成 推理与行动",
+  "ReAct prompting method reasoning acting large language models",
+  "ReAct agent 技术资料 原理 应用"
+ ],
+ "Plan-and-Solve 是什么？": [
+  "Plan-and-Solve 提示方法是什么",
+  "Plan-and-Solve prompting 的定义与原理",
+  "Plan-and-Solve 在大型语言模型推理中的作用"
+ ],
+ "Plan and Solve": [
+  "Plan and Solve 提示策略的技术资料检索",
+  "Plan-and-Solve prompting 方法 相关文献",
+  "Plan and Solve 规划与求解 提示工程 技术文档"
+ ],
+ "Reflection 反思机制怎么工作？": [
+  "Reflection 反思机制的工作原理",
+  "Reflection 反思机制如何实现",
+  "Reflection 反思机制运行流程"
+ ],
+ "Reflection": [
+  "Reflection 反射机制 技术资料 检索",
+  "Reflection 反射 API 英文术语 缩写 文档",
+  "Reflection 编程语言 反射 实现原理 资料"
+ ],
+ "Dify 是什么？": [
+  "Dify 平台是什么",
+  "Dify 开源 LLM 应用开发平台的定义",
+  "Dify AI 应用开发框架介绍"
+ ],
+ "Dify": [
+  "Dify 平台是什么",
+  "Dify LLM 应用开发平台 功能与架构",
+  "Dify open-source LLM app development platform features"
+ ],
+ "LangGraph 是什么？": [
+  "LangGraph 框架是什么",
+  "LangGraph 是什么 图结构 工作流 编排",
+  "LangGraph framework 定义 功能 介绍"
+ ],
+ "LangGraph": [
+  "LangGraph 框架 技术架构 核心概念",
+  "LangGraph 多智能体 工作流 编排 实现",
+  "LangGraph 状态图 节点 边 持久化 检索"
+ ],
+ "RAG 是什么？": [
+  "RAG 是什么？检索增强生成（Retrieval-Augmented Generation, RAG）的定义与基本概念",
+  "RAG（Retrieval-Augmented Generation）是什么？大语言模型中的检索增强生成技术介绍",
+  "什么是 RAG？Retrieval-Augmented Generation 在自然语言处理中的原理与应用"
+ ],
+ "RAG": [
+  "RAG 检索增强生成 技术原理",
+  "Retrieval-Augmented Generation RAG 架构 实现方法",
+  "RAG 大语言模型 外部知识检索 应用场景"
+ ],
+ "MCP 协议是什么？": [
+  "MCP协议的定义和用途是什么？",
+  "Model Context Protocol (MCP) 是什么？",
+  "MCP协议的技术规范和作用是什么？"
+ ],
+ "MCP": [
+  "MCP 全称 Model Context Protocol 的检索资料",
+  "Model Context Protocol 技术规范与文档",
+  "MCP 模型上下文协议 定义 应用"
+ ],
+ "A2A 协议是什么？": [
+  "A2A 协议的定义与核心概念",
+  "Agent2Agent Protocol A2A 技术规范与架构说明",
+  "A2A 协议在智能体互操作中的应用与实现机制"
+ ],
+ "A2A": [
+  "A2A 协议 技术资料 检索",
+  "Agent-to-Agent A2A 协议 规范 文档",
+  "A2A 英文全称 缩写 定义 技术资料库"
+ ],
+ "GRPO 是什么？": [
+  "GRPO 定义 是什么",
+  "GRPO 全称 缩写 含义",
+  "Group Relative Policy Optimization GRPO 解释"
+ ],
+ "GRPO": [
+  "GRPO 算法原理与实现",
+  "Group Relative Policy Optimization GRPO 技术详解",
+  "GRPO 与 PPO 强化学习算法对比"
+ ],
+ "GAIA 基准是什么？": [
+  "GAIA 基准的定义与概述",
+  "GAIA benchmark 是什么：通用 AI 助手基准测试介绍",
+  "GAIA (General AI Assistants benchmark) 基准测试的定义与用途"
+ ],
+ "GAIA": [
+  "GAIA 基准测试 通用人工智能助手 评估",
+  "GAIA benchmark General AI Assistant evaluation dataset",
+  "GAIA 数据集 人工智能助手 性能评测 指标"
+ ],
+ "BFCL 怎么评估工具调用能力？": [
+  "BFCL 工具调用能力评估方法",
+  "BFCL benchmark 如何评估 function calling 能力",
+  "BFCL 工具调用评测指标与评估流程"
+ ],
+ "BFCL": [
+  "BFCL 基准测试 评估框架",
+  "BFCL Berkeley Function Calling Leaderboard 函数调用评测",
+  "BFCL benchmark function calling evaluation LLM"
+ ],
+ "智能体是啥": [
+  "智能体（Agent）的定义与技术概念",
+  "AI Agent 智能体是什么 基本概念",
+  "智能体 Agent 在人工智能领域的含义与原理"
+ ],
+ "模型越大越聪明吗": [
+  "大模型参数规模与性能的关系",
+  "模型参数量对推理能力的影响 scaling law",
+  "LLM模型大小与智能表现的相关性研究"
+ ],
+ "边想边干是啥意思": [
+  "边想边干是什么意思",
+  "边想边干 定义",
+  "边想边干 概念 解释"
+ ],
+ "先规划再动手": [
+  "planning before execution",
+  "plan then act",
+  "planning-first approach"
+ ],
+ "让它自己挑错": [
+  "自动检测错误 自我纠错 自动纠错机制",
+  "self-error detection automatic error detection self-correction",
+  "模型自我纠错 self-refinement 自动发现错误"
+ ],
+ "开源的低代码平台": [
+  "开源低代码平台有哪些",
+  "open source low-code platform 开源 低代码开发平台",
+  "开源低代码开发框架 可自托管 low-code platform"
+ ],
+ "画流程图搭智能体": [
+  "智能体流程图设计 构建方法",
+  "Agent workflow diagram design and construction",
+  "智能体架构流程图 搭建步骤 工具"
+ ],
+ "怎么让它查资料": [
+  "如何实现资料检索功能",
+  "资料查询功能的实现方法",
+  "文献检索系统 实现 方案"
+ ],
+ "怎么接外部工具": [
+  "如何集成外部工具 API",
+  "外部工具接入方法与接口配置",
+  "第三方工具集成方案及 SDK 调用"
+ ],
+ "两个智能体咋对话": [
+  "多智能体系统 智能体间通信 对话机制",
+  "Multi-Agent System agent-to-agent communication dialogue protocol",
+  "智能体交互 消息传递 协作对话 通信协议"
+ ],
+ "不用价值网络的强化学习": [
+  "无价值网络的强化学习方法",
+  "model-free reinforcement learning without value network",
+  "value-free reinforcement learning 算法"
+ ],
+ "测AI助手水平的榜单": [],
+ "怎么测调工具的能力": []
+}

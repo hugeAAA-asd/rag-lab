@@ -22,5 +22,6 @@ __pycache__/
 # 运行日志
 *.log
 
-# 中间产物
-rewrites.json
+# 注意：rewrites.json / routes.json / route_cache_oral.json 是**有意入库**的。
+# 路由要调 LLM，判别有非确定性，同一配置跑两次 @1 会差一题（见 README ⑥）。
+# 把缓存提交上去，别人 clone 下来复跑才能得到和 README 一样的数字。
