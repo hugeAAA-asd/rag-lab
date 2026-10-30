@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>answer.py 逐行翻译：一道题从检索到回答，中间发生了什么</title>
+<style>
+:root{
+  --bg:#faf8f5; --card:#ffffff; --ink:#1f1e1c; --ink2:#57544e; --ink3:#8a857c;
+  --line:#e6e1d8; --code-bg:#f4f1ea; --accent:#9a5b32; --accent2:#3d6b4f;
+  --kw:#8b3a62; --str:#3d6b4f; --cmt:#a39c90; --fn:#2f5d8a;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#191817; --card:#21201e; --ink:#eeeae3; --ink2:#b3ada2; --ink3:#807a70;
+    --line:#332f2b; --code-bg:#161514; --accent:#d29a6a; --accent2:#7fb894;
+    --kw:#d98cae; --str:#8fc9a5; --cmt:#6e6860; --fn:#8ab4dc;
+  }
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:0 20px 80px;
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:16px; line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:700px;margin:0 auto}
+header{padding:56px 0 32px;border-bottom:1px solid var(--line)}
+.kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
+h1{font-size:28px;line-height:1.35;font-weight:600;margin:0 0 14px;letter-spacing:-.01em}
+.sub{color:var(--ink2);font-size:14px}
+h2{font-size:19px;font-weight:600;margin:52px 0 16px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+h3{font-size:15px;font-weight:600;margin:28px 0 8px;color:var(--ink)}
+p{margin:0 0 16px;color:var(--ink2)}
+p strong{color:var(--ink);font-weight:600}
+code{
+  font-family:"SF Mono",Menlo,Consolas,"Courier New",monospace;
+  font-size:.88em;background:var(--code-bg);padding:2px 6px;border-radius:4px;
+  color:var(--accent);border:1px solid var(--line);
+}
+pre{
+  background:var(--code-bg);border:1px solid var(--line);border-radius:10px;
+  padding:20px 18px;overflow-x:auto;margin:0 0 20px;line-height:1.75;
+}
+pre code{background:none;padding:0;border:none;color:var(--ink);font-size:12.8px}
+.kw{color:var(--kw)} .str{color:var(--str)} .cmt{color:var(--cmt);font-style:italic}
+.fn{color:var(--fn)} .num{color:var(--accent)}
+.note{
+  border-left:3px solid var(--accent);background:var(--card);
+  padding:16px 18px;margin:24px 0;border-radius:0 8px 8px 0;
+}
+.note p{margin:0;font-size:15px}
+.note p+p{margin-top:10px}
+.note .lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;font-weight:600}
+.note.bad{border-left-color:#a8422f}
+.note.bad .lbl{color:#a8422f}
+table{width:100%;border-collapse:collapse;margin:0 0 22px;font-size:14px}
+th{text-align:left;font-weight:600;color:var(--ink);padding:10px 10px;border-bottom:1.5px solid var(--line);font-size:12.5px}
+td{padding:11px 10px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+td:first-child{color:var(--ink);font-weight:500}
+.mono{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12.8px}
+ul{margin:0 0 18px;padding-left:20px}
+li{margin-bottom:9px;color:var(--ink2)}
+li strong{color:var(--ink)}
+.big{display:flex;gap:14px;flex-wrap:wrap;margin:24px 0 8px}
+.stat{flex:1;min-width:130px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.stat .n{font-size:25px;font-weight:600;color:var(--accent);line-height:1.2;letter-spacing:-.02em}
+.stat .l{font-size:12.5px;color:var(--ink3);margin-top:5px;line-height:1.4}
+.flow{margin:22px 0;font-size:14.5px}
+.flow div{padding:11px 16px;background:var(--card);border:1px solid var(--line);border-radius:8px;color:var(--ink2)}
+.flow div+div{margin-top:8px}
+.flow b{color:var(--ink)}
+.flow .tick{color:var(--accent2);margin-right:8px}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--line);color:var(--ink3);font-size:13px}
+@media(max-width:600px){
+  body{padding:0 16px 60px;font-size:15.5px}
+  h1{font-size:23px} h2{font-size:17px;margin-top:42px}
+  header{padding:36px 0 24px}
+  pre{padding:16px 14px} pre code{font-size:12px}
+  table{font-size:13px} td,th{padding:9px 7px}
+}
+@media print{
+  body{padding:0 6mm 8mm;background:#fff;color:#1f1e1c;font-size:11pt}
+  .wrap{max-width:none}
+  header{padding:0 0 18px}
+  pre,table,.note,.stat,.flow div{break-inside:avoid;page-break-inside:avoid}
+  h2,h3{break-after:avoid;page-break-after:avoid}
+  pre{background:#f7f5f0 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;
+      white-space:pre-wrap;overflow-wrap:break-word;overflow:visible}
+  pre code{font-size:10pt;white-space:pre-wrap;overflow-wrap:break-word}
+  table,.note{border-color:#d8d2c6}
+  footer{margin-top:28px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">2026-10-29 &nbsp;·&nbsp; rag-lab &nbsp;·&nbsp; 第 ⑤ 站</div>
+  <h1>answer.py 逐行翻译：一道题从检索到回答，中间发生了什么</h1>
+  <div class="sub">七十三行代码，只有三个动作：找料、判断、作答。<br>难的不是写出来，是知道每一步在哪一层负责。</div>
+</header>
+
+<h2>睡前 3 分钟版</h2>
+
+<div class="big">
+  <div class="stat"><div class="n">191</div><div class="l">全部行数<br>5 个函数</div></div>
+  <div class="stat"><div class="n">3</div><div class="l">道闸门<br>检索 / 阈值 / prompt</div></div>
+  <div class="stat"><div class="n">6.3s</div><div class="l">单题耗时<br>其中模型约 2s</div></div>
+</div>
+
+<ul>
+  <li><strong>它不是「调用模型」，是「给模型准备好材料，再逼它只说材料里的话」。</strong>模型在这套系统里是最不重要的一环。</li>
+  <li><strong>阈值判断必须放在调 API 之前。</strong>放后面就是花完钱再拒，白烧 token。</li>
+  <li><strong>返回 <code>dict</code> 而不是字符串。</strong>因为一次回答里有五样东西要交付：结论、证据、分数、引用、是否拒答。</li>
+  <li><strong>没装 openai SDK。</strong>一个 POST 就能干的事，没必要多一个依赖。</li>
+</ul>
+
+<h2>01 &nbsp;数据流：五个动作</h2>
+
+<div class="flow">
+  <div><span class="tick">①</span>问题 → <b>search()</b> → 3 块材料 + 3 个分数（复用第 ④ 站的精排版，不重写）</div>
+  <div><span class="tick">②</span>看第 1 块分数 → <b>低于 0.60 直接拒答</b>，连 API 都不调</div>
+  <div><span class="tick">③</span>3 块材料 → <b>编号 [1][2][3] + 去掉 ## 前缀</b> → 拼成【材料】段落</div>
+  <div><span class="tick">④</span>系统提示 + 材料 + 问题 → <b>一个 POST 到 deepseek</b></div>
+  <div><span class="tick">⑤</span>答案里的 <b>[n]</b> 抽出来反查 → 有没有越界乱标</div>
+</div>
+
+<p>五步里有四步跟模型无关。<strong>RAG 的功夫全在模型之外</strong>，模型只负责把材料组织成人话。</p>
+
+<h2>02 &nbsp;完整代码（带逻辑标注）</h2>
+
+<h3>第一段：配置与宪法</h3>
+
+<pre><code>TOP_K = <span class="num">3</span>              <span class="cmt"># 喂给模型几段材料</span>
+MIN_SCORE = <span class="num">0.60</span>       <span class="cmt"># 精排分低于这个就拒答（abstain.py 扫出来的最优阈值）</span>
+API_URL = <span class="str">"https://api.deepseek.com/chat/completions"</span>
+MODEL = <span class="str">"deepseek-chat"</span>
+
+<span class="cmt"># 这段话是整个系统的「宪法」。没有它，模型见到材料就会开始自由发挥。</span>
+SYSTEM_PROMPT = (
+    <span class="str">"你是一个只根据给定材料回答问题的助手，必须遵守以下规则：\n"</span>
+    <span class="str">"1. 只能使用【材料】里的内容回答，不许用自己的知识补充，也不许推测。\n"</span>
+    <span class="str">"2. 每句结论后面用 [1] [2] [3] 标出它出自哪段材料；用到几段就标几个。\n"</span>
+    <span class="str">"3. 如果材料里没有足够信息回答问题，直接回答「材料里没有相关内容」，不要硬凑。\n"</span>
+    <span class="str">"4. 回答控制在 3 句话以内，直接给结论，不要复述问题。"</span>
+)</code></pre>
+
+<p><strong>第 3 条是全文最重要的一句。</strong>它把「拒答」这件事从检索层挪到了生成层——因为检索分数测的是<em>语义相关</em>，不是<em>能不能回答</em>。书里只提了个名字的题，检索分能到 0.969，只有模型读了材料才知道够不够。</p>
+
+<h3>第二段：把检索结果拼成材料</h3>
+
+<pre><code><span class="kw">def</span> <span class="fn">build_material</span>(hits):
+    <span class="str">"""每段材料带编号，编号就是后面引用的锚点"""</span>
+    parts = []
+    <span class="kw">for</span> n, (idx, score) <span class="kw">in</span> <span class="fn">enumerate</span>(hits, <span class="num">1</span>):
+        title, body = chunks[idx][<span class="num">1</span>], chunks[idx][<span class="num">2</span>]
+        title = title.strip().lstrip(<span class="str">"#"</span>).strip()
+        <span class="cmt">#        ↑ "## 1.1 什么是智能体"  →  "1.1 什么是智能体"</span>
+        parts.append(<span class="str">"[%d] 出自《%s》\n%s"</span> % (n, title, body.strip()))
+    <span class="kw">return</span> <span class="str">"\n\n"</span>.join(parts)
+
+
+<span class="kw">def</span> <span class="fn">build_prompt</span>(question, hits):
+    <span class="kw">return</span> <span class="str">"【材料】\n%s\n\n【问题】\n%s"</span> % (build_material(hits), question)</code></pre>
+
+<div class="note">
+  <div class="lbl">为什么要把 <code>##</code> 去掉</div>
+  <p><code>##</code> 对模型是噪音，但「1.1 什么是智能体？」这个标题是有价值的——它让模型知道这段出自哪一节，引用时能说出处。</p>
+  <p><strong>切块时产生的元数据，到生成时变成了引用标注。</strong>这条链是闭的：切块记录标题 → 向量化带上标题 → 检索命中标题 → 材料里带上标题 → 答案里标出来源。</p>
+</div>
+
+<h3>第三段：调用模型</h3>
+
+<pre><code><span class="kw">def</span> <span class="fn">ask_llm</span>(prompt, key, temperature=<span class="num">0.1</span>):
+    <span class="str">"""OpenAI 兼容接口，一个 POST 就够，没必要为它装个 SDK"""</span>
+    body = json.dumps({
+        <span class="str">"model"</span>: MODEL,
+        <span class="str">"messages"</span>: [
+            {<span class="str">"role"</span>: <span class="str">"system"</span>, <span class="str">"content"</span>: SYSTEM_PROMPT},   <span class="cmt"># 宪法</span>
+            {<span class="str">"role"</span>: <span class="str">"user"</span>,   <span class="str">"content"</span>: prompt},          <span class="cmt"># 材料 + 问题</span>
+        ],
+        <span class="str">"temperature"</span>: temperature,   <span class="cmt"># 0.1：要的是忠实复述材料，不是创作</span>
+        <span class="str">"max_tokens"</span>: <span class="num">512</span>,
+    }).encode(<span class="str">"utf-8"</span>)
+
+    req = urllib.request.Request(
+        API_URL, data=body,
+        headers={<span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
+                 <span class="str">"Authorization"</span>: <span class="str">"Bearer "</span> + key},
+    )
+    <span class="kw">with</span> urllib.request.urlopen(req, timeout=<span class="num">60</span>) <span class="kw">as</span> r:
+        data = json.load(r)
+    <span class="kw">return</span> data[<span class="str">"choices"</span>][<span class="num">0</span>][<span class="str">"message"</span>][<span class="str">"content"</span>], data.get(<span class="str">"usage"</span>, {})</code></pre>
+
+<p>三层嵌套就是接口的全部形状：<code>choices[0].message.content</code>——第一个候选、里面的消息、消息的正文。<code>usage</code> 顺手拿回来，是为了看 token 花在哪：<strong>prompt token 太少，说明检索喂的材料本身就很薄</strong>，这比看分数更能反映问题。</p>
+
+<h3>第四段：主流程（三个逻辑判断，看懂这段就够）</h3>
+
+<pre><code><span class="kw">def</span> <span class="fn">answer</span>(question, key=<span class="kw">None</span>, dry=<span class="kw">False</span>):
+    <span class="str">"""返回一个 dict：hits 是证据，answer 是结论，refused 表示兜没兜住"""</span>
+    hits = search(question, k=TOP_K)      <span class="cmt">◀ 逻辑 1：检索只管找，不管判</span>
+    top = hits[<span class="num">0</span>][<span class="num">1</span>]                    <span class="cmt">◀ 逻辑 2：取第一名分数（不是第一个结果）</span>
+
+    <span class="kw">if</span> top &lt; MIN_SCORE:                 <span class="cmt">◀ 逻辑 3：调 API 之前先拦一道</span>
+        <span class="kw">return</span> {
+            <span class="str">"question"</span>: question, <span class="str">"hits"</span>: hits, <span class="str">"answer"</span>: <span class="kw">None</span>,
+            <span class="str">"refused"</span>: <span class="kw">True</span>,
+            <span class="str">"reason"</span>: <span class="str">"top1 精排 %.3f &lt; 阈值 %.2f"</span> % (top, MIN_SCORE),
+        }
+
+    prompt = build_prompt(question, hits)
+    <span class="kw">if</span> dry:                              <span class="cmt">◀ 逻辑 4：dry 模式在调模型前返回，省 key 省时间</span>
+        <span class="kw">return</span> {<span class="str">"question"</span>: question, <span class="str">"hits"</span>: hits,
+                <span class="str">"answer"</span>: <span class="kw">None</span>, <span class="str">"refused"</span>: <span class="kw">False</span>, <span class="str">"prompt"</span>: prompt}
+
+    <span class="kw">try</span>:
+        text, usage = ask_llm(prompt, key <span class="kw">or</span> load_key())   <span class="cmt">◀ 逻辑 5：短路求值，传了就用传的</span>
+    <span class="kw">except</span> urllib.error.HTTPError <span class="kw">as</span> e:              <span class="cmt">◀ 逻辑 6：错误也走同一个 return 形状</span>
+        detail = e.read().decode(<span class="str">"utf-8"</span>, <span class="str">"ignore"</span>)[:<span class="num">200</span>]
+        <span class="kw">return</span> {<span class="str">"question"</span>: question, <span class="str">"hits"</span>: hits, <span class="str">"answer"</span>: <span class="kw">None</span>,
+                <span class="str">"refused"</span>: <span class="kw">False</span>, <span class="str">"prompt"</span>: prompt,
+                <span class="str">"error"</span>: <span class="str">"接口返回 %d：%s"</span> % (e.code, detail)}
+
+    <span class="kw">return</span> {<span class="str">"question"</span>: question, <span class="str">"hits"</span>: hits, <span class="str">"answer"</span>: text.strip(),
+            <span class="str">"refused"</span>: <span class="kw">False</span>, <span class="str">"prompt"</span>: prompt, <span class="str">"usage"</span>: usage}</code></pre>
+
+<h2>03 &nbsp;六个逻辑，逐条翻译</h2>
+
+<table>
+  <tr><th>逻辑</th><th>代码</th><th>翻译成人话</th></tr>
+  <tr>
+    <td>1</td>
+    <td class="mono">hits = search(q, k=3)</td>
+    <td>拿回 3 个 <code>(块下标, 分数)</code>。<strong>检索不判断能不能答</strong>，它只负责把最像的三块捞上来，判断是后面两道闸门的事。</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td class="mono">top = hits[0][1]</td>
+    <td><code>hits[0]</code> 是第一名那个元组，<code>[1]</code> 是它里面的分数（<code>[0]</code> 是块下标）。<strong>取的是分数，不是块。</strong></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td class="mono">if top &lt; 0.60</td>
+    <td>第一道闸门。<strong>位置很关键</strong>：放在 <code>ask_llm</code> 之前，拒答就不花一分钱；放后面就是烧完 token 再说「不答」。</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td class="mono">if dry: return</td>
+    <td>调试开关。把 <code>prompt</code> 原样吐出来，你可以肉眼检查材料拼得对不对。<strong>调 RAG 时最先该看的不是答案，是 prompt。</strong></td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td class="mono">key or load_key()</td>
+    <td>短路求值：<code>key</code> 非空就用它，空的才去读 <code>.env</code>。所以命令行传的 key 优先级高于配置文件。</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td class="mono">except HTTPError</td>
+    <td><strong>错误也返回同样的 dict 形状</strong>，多一个 <code>error</code> 字段。这样上层调用不用写两种处理分支，<code>if r.get("error")</code> 一句就够。</td>
+  </tr>
+</table>
+
+<h2>04 &nbsp;返回 dict 而不是字符串</h2>
+
+<p>这是整个文件里最容易被写错的设计。如果 <code>answer()</code> 直接 <code>return text</code>，那么上层就拿不到证据、分数、是否拒答，<strong>出了错也无从定位</strong>。</p>
+
+<pre><code><span class="cmt"># 一次回答其实要交付五样东西</span>
+{
+  <span class="str">"answer"</span>:  <span class="str">"MCP 统一了智能体与外部工具的交互方式[1]"</span>,   <span class="cmt"># 结论</span>
+  <span class="str">"hits"</span>:    [(12, <span class="num">0.985</span>), (33, <span class="num">0.880</span>), (58, <span class="num">0.665</span>)],  <span class="cmt"># 证据（谁支撑的）</span>
+  <span class="str">"refused"</span>: <span class="kw">False</span>,                                    <span class="cmt"># 是不是拒答</span>
+  <span class="str">"prompt"</span>:  <span class="str">"【材料】..."</span>,                             <span class="cmt"># 模型实际看到的东西</span>
+  <span class="str">"usage"</span>:   {<span class="str">"prompt_tokens"</span>: <span class="num">1435</span>, ...},            <span class="cmt"># 花了多少 token</span>
+}</code></pre>
+
+<p>有了这五样，出问题的时候你能一层层往回查：答案不对 → 看 <code>hits</code> 是不是对的块 → 看 <code>prompt</code> 是不是完整 → 看 <code>usage</code> 是不是太薄。<strong>只返回一个字符串的话，这四层全断了。</strong></p>
+
+<h2>05 &nbsp;四个容易写错的地方</h2>
+
+<table>
+  <tr><th>写法</th><th>会怎样</th><th>为什么</th></tr>
+  <tr>
+    <td class="mono">chunks[idx][0]</td>
+    <td>喂给模型一堆文件路径</td>
+    <td>元组是 <code>(path, title, text)</code>，<code>[0]</code> 是路径，<code>[1]</code> 才是标题</td>
+  </tr>
+  <tr>
+    <td class="mono">title.lstrip("#")</td>
+    <td>前面留一个空格</td>
+    <td><code>"## 1.1"</code> 去掉井号后是 <code>" 1.1"</code>，<strong>后面还得再 strip 一次</strong></td>
+  </tr>
+  <tr>
+    <td class="mono">hits[0]</td>
+    <td>把元组当分数比大小</td>
+    <td>要 <code>hits[0][1]</code>。<code>hits[0]</code> 是 <code>(下标, 分数)</code>，拿它跟 0.60 比会报错</td>
+  </tr>
+  <tr>
+    <td class="mono">elif r["answer"] is None</td>
+    <td>出错时显示成「dry 模式」</td>
+    <td><code>error</code> 那条分支<strong>必须放在 <code>answer is None</code> 之前</strong>，因为出错时 answer 也是 None</td>
+  </tr>
+</table>
+
+<div class="note bad">
+  <div class="lbl">最后一条是真踩过的</div>
+  <p>写 <code>show()</code> 的时候先写了 <code>elif r["answer"] is None</code>，再加 <code>error</code> 分支就顺手加在了后面。结果 key 错的时候，屏幕上显示「dry 模式，未调用模型」，而实际上模型调了、还失败了。</p>
+  <p><strong>分支顺序错了不报错，只会显示错误的信息。</strong>这跟切块那天的 <code>~~~</code> 是同一类问题：静默失败。</p>
+</div>
+
+<h2>06 &nbsp;这套代码有一个真实漏洞</h2>
+
+<p>今晚做判断练习时发现的：如果材料里只有一段代码，代码里出现了 <code>stdio</code> 和 <code>sse</code> 两个词，但没有一句话说「这两个是传输方式」，模型会直接答「MCP 支持 stdio 和 sse 两种传输方式 [3]」。</p>
+
+<p><strong>答案碰巧是对的，但推理链不成立。</strong>假如代码里写的是 <code>websocket</code>，它照样会这么说。</p>
+
+<p>现有宪法管不住这种情况：第 3 条只管「材料不足就说不知道」，管不住「材料提了个词，模型自己升级成结论」。所以还缺一条：</p>
+
+<pre><code><span class="str">"5. 只有材料明确陈述的内容才能作为结论；不许从代码、示例、片段里推断。"</span></code></pre>
+
+<div class="note">
+  <div class="lbl">这条为什么难想到</div>
+  <p>因为它<strong>只在答案正确时才暴露</strong>。答案错的时候你会去查；答案对的时候没人查证据。这类 bug 在线上会一直活下去。</p>
+  <p>所以 RAG 的验收标准不能是「答案对不对」，得是<strong>「证据能不能支撑这个结论」</strong>。</p>
+</div>
+
+<h2>07 &nbsp;明天从哪接着来</h2>
+
+<p>这套代码本身没有大问题了，卡住的是它上游：</p>
+
+<table>
+  <tr><th>题</th><th>用户怎么问</th><th>书里叫什么</th><th>检索分</th></tr>
+  <tr><td>8.3</td><td>先检索外部资料再让模型生成答案</td><td>检索增强生成（RAG）</td><td class="no">0.790</td></tr>
+  <tr><td>4.2</td><td>一边推理一边调用工具的范式</td><td>ReAct（Reason + Act）</td><td class="no">0.854</td></tr>
+</table>
+
+<p>问题里一个术语都没有，文档全靠术语，<strong>bi-encoder 建不起这座桥</strong>。明天做查询改写：让模型先把口语问题改写成术语问题，再拿去检索。</p>
+
+<p>改写的代码会长在 <code>answer.py</code> 的最前面，多一步、多一次调用、多一秒，但能救回的是整类题。</p>
+
+<footer>
+  文件：<span class="mono">answer.py</span> · 191 行 · 5 个函数 · 3 道闸门 · 1 个待补的漏洞<br>
+  下一步：查询改写 → HyDE → 再回头处理 <span class="mono">PER_SECTION</span> 的配额
+</footer>
+
+</div>
+</body>
+</html>

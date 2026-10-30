@@ -1,0 +1,26 @@
+# 密钥：绝对不能进版本库
+.env
+*.env
+!.env.example
+
+# 虚拟环境
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 向量缓存（体积大，可重算）
+*.npy
+
+# 运行日志
+*.log
+
+# 中间产物
+rewrites.json
