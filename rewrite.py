@@ -86,15 +86,24 @@ def _collect(scores, nsec, per, skip_idx=()):
     return out
 
 
-def search_multi(question, rews=None, k=3, per=2, nsec=15, extra_sec=5):
+def search_multi(question, rews=None, k=3, per=2, nsec=15, extra_sec=5,
+                 picks=None, bonus=0.0):
     """原问题选主候选，改写只补漏，精排只用原问题
 
     注意这里不是 max 融合。试过：让改写和原问题平起平坐地投票（每块取最高分），
     改写句越准越坏事——「StateGraph」「BaaS LLMOps」这些词会撞上别处「提到过」
     它们的块，把真正讲这一节的挤掉。8 题实测：基线 4/8、max 4/8、本方案 6/8，
     而且本方案是基线的严格超集（救回 2 题，0 题被弄坏）。
+
+    picks / bonus 是后来加的：极短口语场景下 cross-encoder 本身是瞎的
+    （「边想边干是啥意思」会被判给 (开头) 块 0.271，而路由明明选中 4.2 ReAct），
+    这时候必须让路由这个更可靠的信号参与打分，否则它 12/13 的准确率会被
+    精排压到 4/13。bonus=0 时本函数与加这两个参数之前完全等价。
     """
-    main = _collect(vecs @ embed_query(question), nsec, per)
+    qv = embed_query(question)
+    scores = vecs @ qv
+
+    main = _collect(scores, nsec, per)
     seen = set(main)
 
     extra = []
@@ -103,18 +112,51 @@ def search_multi(question, rews=None, k=3, per=2, nsec=15, extra_sec=5):
         extra += got
         seen |= set(got)
 
+    # 路由补漏：命中的章节挑几块进来，不经过改写的模糊匹配
+    #
+    # 挑块的规则是踩过坑之后定的：一开始只取「该节余弦最高」的块，结果
+    #   8.3 拿到的是讲 HyDE 的那块（余弦 0.515），而正确答案在第 1 块
+    #       「8.3.1 RAG 的基础知识」（余弦 0.439）；
+    #   1.1 拿到的是讲旅行规划的例子，而真定义在 idx=1「智能体被定义为…」。
+    # 余弦天然偏好短块和具体例子（信息密度高、词重复多），而章节开头
+    # 恰恰是定义和导语，才是最该给模型的材料。所以改成前 2 块 + 余弦最高 1 块。
+    if picks:
+        for title in picks:
+            idxs = [i for i, c in enumerate(chunks) if c[1].strip() == title.strip()]
+            if not idxs:
+                continue
+            chosen = idxs[:2]
+            best = max(idxs, key=lambda i: scores[i])
+            if best not in chosen:
+                chosen.append(best)
+            for i in chosen:
+                if i not in seen:
+                    seen.add(i)
+                    extra.append(i)
+
     cand = main + extra
 
     pairs = [(question, chunks[i][1] + "\n" + chunks[i][2]) for i in cand]
-    rs = reranker.predict(pairs, batch_size=16)
+    raw = np.array(reranker.predict(pairs, batch_size=16), dtype=float)
+    rs = raw.copy()          # rs 只用来排序，raw 才是要交给下游的分数
 
+    if bonus and picks:
+        pick_set = {p.strip() for p in picks}
+        for j, i in enumerate(cand):
+            if chunks[i][1].strip() in pick_set:
+                rs[j] += bonus
+
+    # 为什么返回 raw 而不是 rs：answer.py 拿 top1 分数和 MIN_SCORE=0.60 比大小来决定拒答。
+    # bonus 把分数推到 1.xx 之后这个阈值就永远不生效——一个被路由选中但内容完全
+    # 不沾边的块，会带着高分闯进生成环节，还不会被拦。
+    # 同一个分数在两个环节含义不能分裂：排序时它是综合信号，拒答时它必须是精排的原始判断。
     picked, seen = [], set()
     for j in np.argsort(-rs):
         title = chunks[cand[int(j)]][1]
         if title in seen:
             continue
         seen.add(title)
-        picked.append((cand[int(j)], float(rs[int(j)])))
+        picked.append((cand[int(j)], float(raw[int(j)])))
         if len(picked) == k:
             break
     return picked

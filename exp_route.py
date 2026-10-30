@@ -15,54 +15,22 @@ import os
 os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 
-import re
 import numpy as np
 
 from embed import embed_query
 from eval import vecs, reranker, chunks
-from llm import ask_llm, load_key
-
-# ── 目录：79 个二级标题，编号给 LLM 当选项 ──
-TITLES = []
-for c in chunks:
-    t = c[1].strip()
-    if t.startswith("## ") and t not in TITLES:
-        TITLES.append(t)
-
-MENU = "\n".join("%d. %s" % (i + 1, t.lstrip("# ").strip()) for i, t in enumerate(TITLES))
-
-ROUTE_SYSTEM = "你是图书检索员。用户会问一个问题，你要从图书目录里挑出最可能回答它的章节。"
-
-ROUTE_TEMPLATE = (
-    "这是一本关于智能体（Agent）的技术书，目录如下：\n\n%s\n\n"
-    "读者的问题：%s\n\n"
-    "从上面的目录里选出最可能回答这个问题的 3 个章节。"
-    "只输出编号，用逗号分隔，不要解释，不要输出章节名。例如：12,34,56"
-)
+from llm import load_key
+from route import route, TITLES, MENU      # 路由逻辑已固化到 route.py
 
 
-def route(question, key=None, n=3):
-    """让 LLM 从目录里挑章节，返回标题列表
+def search_routed(question, picks, k=3, per=2, nsec=15, bonus=0.0):
+    """原问题选主候选 + 路由到的章节补候选，精排仍用原问题
 
-    失败返回空列表——和 rewrite 一样，没有路由也要能正常检索。
+    bonus：给路由选中的章节加分，让路由参与排序而不只是递候选。
+    为什么需要它：极短口语档上 cross-encoder 本身是瞎的——
+    「边想边干是啥意思」被精排打给 (开头) 块 0.271，而路由明明选中了 4.2 ReAct。
+    信号比裁判准的时候，不能让裁判独裁。
     """
-    try:
-        txt, usage = ask_llm(ROUTE_TEMPLATE % (MENU, question), key or load_key(),
-                             ROUTE_SYSTEM, temperature=0.0)
-    except Exception as e:
-        print("   ! 路由失败，退回纯原问：%s" % e)
-        return [], ""
-
-    picks = []
-    for num in re.findall(r"\d+", txt):
-        i = int(num) - 1
-        if 0 <= i < len(TITLES) and TITLES[i] not in picks:
-            picks.append(TITLES[i])
-    return picks[:n], txt.strip()
-
-
-def search_routed(question, picks, k=3, per=2, nsec=15):
-    """原问题选主候选 + 路由到的章节补候选，精排仍用原问题"""
     qv = embed_query(question)
     scores = vecs @ qv
 
@@ -95,7 +63,13 @@ def search_routed(question, picks, k=3, per=2, nsec=15):
 
     cand = main + extra
     pairs = [(question, chunks[i][1] + "\n" + chunks[i][2]) for i in cand]
-    rs = reranker.predict(pairs, batch_size=16)
+    rs = np.array(reranker.predict(pairs, batch_size=16), dtype=float)
+
+    if bonus > 0:
+        pick_set = {p.strip() for p in picks}
+        for j, i in enumerate(cand):
+            if chunks[i][1].strip() in pick_set:
+                rs[j] += bonus
 
     picked, seen_t = [], set()
     for j in np.argsort(-rs):
