@@ -725,5 +725,55 @@
   "红烧肉 做法 菜谱",
   "红烧肉 烹饪步骤 食谱",
   "红烧肉 制作方法 烹饪教程"
+ ],
+ "特斯拉股票明天会涨吗？": [
+  "特斯拉 TSLA 股价短期走势预测",
+  "TSLA 股票次日涨跌预测分析",
+  "特斯拉 美股 短线行情预测"
+ ],
+ "Excel 的数据透视表怎么做？": [
+  "Excel 数据透视表创建方法",
+  "如何在 Excel 中制作 pivot table",
+  "Excel PivotTable 插入与使用教程"
+ ],
+ "智能体在量化交易里怎么落地？": [
+  "智能体在量化交易中的落地应用与实现方法",
+  "AI agent 量化交易 系统架构 部署方案",
+  "LLM agent 量化投资 策略执行 工程实践"
+ ],
+ "怎么用大模型自动生成公司的财务报表？": [
+  "大模型自动生成财务报表的方法",
+  "LLM-based automated financial statement generation",
+  "利用大语言模型自动编制企业财务报表的技术方案"
+ ],
+ "智能体能不能替代招聘初筛？": [
+  "AI智能体能否替代招聘初筛环节",
+  "智能体在招聘初筛中的应用可行性",
+  "AI Agent替代简历初筛的技术方案"
+ ],
+ "智能体用在直播带货的客服上，效果怎么样？": [
+  "智能体在直播带货客服场景中的应用效果评估",
+  "AI Agent 直播电商客服 效果分析",
+  "直播带货智能客服 转化率 用户满意度 性能评测"
+ ],
+ "合同审查该选哪个智能体框架？": [
+  "合同审查 智能体框架 选型 对比",
+  "合同审查 AI Agent 框架 推荐",
+  "合同审查 智能体框架 技术选型 评估"
+ ],
+ "Claude 和 GPT 在智能体任务上谁更强？": [
+  "Claude 与 GPT 在智能体任务（Agentic Tasks）上的性能对比",
+  "Claude vs GPT 智能体能力（Agent Capabilities）评测对比",
+  "Claude 和 GPT 在自主智能体（Autonomous Agents）任务中的表现差异"
+ ],
+ "MCP 协议的版本号和向后兼容策略是怎样的？": [
+  "MCP协议 版本号 向后兼容 策略",
+  "Model Context Protocol version compatibility backward compatibility",
+  "MCP protocol versioning and backward compatibility policy"
+ ],
+ "Cursor 这类 AI 编辑器内部是怎么实现的？": [
+  "AI 代码编辑器 Cursor 的内部实现架构与工作原理",
+  "Cursor AI IDE 的技术实现机制：基于 LLM 的代码补全与生成",
+  "AI 编程工具 Cursor 的底层实现：大语言模型集成与代码编辑器架构"
  ]
 }
