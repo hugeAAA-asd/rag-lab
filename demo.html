@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rag-lab · 章节路由 vs 小节直选</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --card: #ffffff; --line: #e6e5e1;
+    --ink: #1f1e1c; --mute: #6b6a65; --hint: #9a9892;
+    --ok: #2f7d4f; --bad: #b23b3b; --accent: #2f5d8a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.65 -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 34px 20px 60px; }
+  h1 { font-size: 21px; font-weight: 600; margin: 0 0 6px; letter-spacing: .2px; }
+  .sub { color: var(--mute); font-size: 14px; margin-bottom: 22px; }
+  .kpis { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; }
+  .kpi {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 16px; min-width: 132px;
+  }
+  .kpi b { display: block; font-size: 20px; font-weight: 600; }
+  .kpi span { color: var(--hint); font-size: 12px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab {
+    border: 1px solid var(--line); background: var(--card); color: var(--mute);
+    padding: 7px 14px; border-radius: 999px; cursor: pointer; font-size: 13px;
+  }
+  .tab.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  table { width: 100%; border-collapse: collapse; background: var(--card);
+          border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  th, td { text-align: left; padding: 11px 13px; border-bottom: 1px solid var(--line);
+           vertical-align: top; font-size: 13.5px; }
+  th { background: #f6f5f2; color: var(--mute); font-weight: 500; font-size: 12.5px; }
+  tr:last-child td { border-bottom: none; }
+  .q { max-width: 330px; }
+  .mono { font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; }
+  .ok { color: var(--ok); }
+  .bad { color: var(--bad); }
+  .dim { color: var(--hint); }
+  .chip { display: inline-block; padding: 1px 7px; border-radius: 5px;
+          background: #f1f0ed; font-size: 12px; margin-right: 4px; }
+  .chip.hit { background: #e4f0e7; color: var(--ok); }
+  .chip.miss { background: #f7e6e6; color: var(--bad); }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+           padding: 18px; margin-top: 18px; }
+  input[type=text] {
+    width: 100%; padding: 11px 13px; border: 1px solid var(--line); border-radius: 9px;
+    font-size: 14px; background: #fff; color: var(--ink);
+  }
+  button.go {
+    margin-top: 10px; padding: 9px 18px; border-radius: 9px; border: 1px solid var(--ink);
+    background: var(--ink); color: #fff; font-size: 14px; cursor: pointer;
+  }
+  button.go:disabled { opacity: .45; cursor: default; }
+  .hit { border-top: 1px solid var(--line); padding: 14px 0 4px; }
+  .hit h4 { margin: 0 0 6px; font-size: 14px; font-weight: 600; }
+  .snip { color: var(--mute); font-size: 13px; }
+  .foot { color: var(--hint); font-size: 12.5px; margin-top: 26px; line-height: 1.7; }
+  a { color: var(--accent); }
+  .empty { color: var(--hint); padding: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>同一道题，旧链路选「章节」，新链路选「小节」</h1>
+  <div class="sub" id="sub"></div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="tabs" id="filters"></div>
+
+  <table>
+    <thead><tr>
+      <th>问题</th><th>正确小节</th>
+      <th>旧：章节路由 top3</th><th>新：小节直选 top3</th><th>结果</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <div class="panel">
+    <div style="font-weight:600;margin-bottom:4px">现场试一句</div>
+    <div class="dim" style="margin-bottom:12px;font-size:13px">
+      需要先在本地跑 <span class="mono">python api.py</span>（会加载约 500MB 模型）。
+      没配 key 时只做检索、不做小节直选，返回的 <span class="mono">mode</span> 会如实标成 plain。
+    </div>
+    <input type="text" id="q" placeholder="例：敲命令查出来的东西，怎么顺手存进记忆和笔记里">
+    <button class="go" id="go">检索</button>
+    <div id="out"></div>
+  </div>
+
+  <div class="foot">
+    数据来自仓库里的候选池（<span class="mono">allsub_pools_*.json</span>），页面为静态生成，
+    与 README ⑧ 的数字同源。<br>
+    「小节直选」= 287 个小节一次交给模型选 3 个，章节号反推；
+    「章节路由」= 79 个章节选 3 个，再在章内挑小节。
+  </div>
+</div>
+
+<script>
+const DATA = {"h3": {"label": "h3 干净留出集（20 题，唯一未污染）", "rows": [{"q": "模型看不懂字，得先切成它认识的小块，这步怎么做的", "want": "3.2.2", "sec": "3.2", "subs": ["3.2.2"], "picks": ["3.1 语言模型与 Transformer 架构", "8.3 RAG系统：知识检索增强", "4.1 环境准备与基础工具定义"], "rk_old": null, "rk_new": 1, "ok_old": false, "ok_new": true}, {"q": "计划列好了，谁去一步步做、上一步的结果怎么带给下一步", "want": "4.3.3", "sec": "4.3", "subs": ["4.3.3", "4.3.2", "4.2.1"], "picks": ["4.3 Plan-and-Solve", "6.5 框架四：LangGraph", "7.4 Agent范式的框架化实现"], "rk_old": null, "rk_new": 1, "ok_old": false, "ok_new": true}, {"q": "收邮件、看明白啥意思、再回一封，这一整套怎么自动搭起来", "want": "5.5.2", "sec": "5.5", "subs": ["5.5.2", "5.5.4", "5.5.1"], "picks": ["5.5 平台四：n8n", "10.2 MCP 协议实战", "1.4 智能体应用的协作模式"], "rk_old": null, "rk_new": 1, "ok_old": false, "ok_new": true}, {"q": "不想走云端，让模型跑在自己机器上，还得扛住一批并发", "want": "7.2.2", "sec": "7.2", "subs": ["7.2.2", "11.6.3", "11.6.4"], "picks": ["3.2 与大语言模型交互", "6.3 框架二：AgentScope", "11.6 完整训练流程实战"], "rk_old": null, "rk_new": 1, "ok_old": false, "ok_new": true}, {"q": "把外挂知识库那套拆开，从上到下分成几层", "want": "8.3.4", "sec": "8.3", "subs": ["8.3.4", "8.3.2", "8.3.1"], "picks": ["8.3 RAG系统：知识检索增强", "8.2 记忆系统：让智能体拥有记忆", "9.1 什么是上下文工程"], "rk_old": null, "rk_new": 1, "ok_old": false, "ok_new": true}, {"q": "现成的工具服务别人早就写好了，上哪儿去找", "want": "10.2.5", "sec": "10.2", "subs": ["10.2.5", "10.2.2", "10.2.1"], "picks": ["10.2 MCP 协议实战", "10.5 构建自定义 MCP 服务器", "10.1 智能体通信协议基础"], "rk_old": null, "rk_new": 1, "ok_old": false, "ok_new": true}, {"q": "敲命令查出来的东西，怎么顺手存进记忆和笔记里", "want": "9.5.4", "sec": "9.5", "subs": ["8.2.3", "8.2.4", "9.5.2"], "picks": ["9.5 TerminalTool：即时文件系统访问", "9.4 NoteTool：结构化笔记", "8.2 记忆系统：让智能体拥有记忆"], "rk_old": 1, "rk_new": 2, "ok_old": true, "ok_new": false}, {"q": "早期那种聊天程序，是怎么从我说的句子里挑出关键词再接一句的", "want": "2.2.2", "sec": "2.2", "subs": ["2.2.2", "2.2.1", "2.2.3"], "picks": ["2.2 构建基于规则的聊天机器人", "2.1 基于符号与逻辑的早期智能体", "2.4 学习范式的演进与现代智能体"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "让它自己反复返工，划算吗，代价在哪儿", "want": "4.4.5", "sec": "4.4", "subs": ["4.4.5", "4.4.1", "4.4.4"], "picks": ["4.4 Reflection", "9.2 为什么上下文工程重要", "11.4 GRPO 训练"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "框架里最基础那个能对话的智能体，想写一个自己的", "want": "7.4.1", "sec": "7.4", "subs": ["7.4.1", "7.3.3", "7.1.2"], "picks": ["7.4 Agent范式的框架化实现", "7.3 框架接口实现", "4.2 ReAct"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "把文档问答做成一个类，那个类里都装了些什么", "want": "8.4.2", "sec": "8.4", "subs": [], "picks": ["8.4 构建智能文档问答助手", "8.3 RAG系统：知识检索增强", "7.3 框架接口实现"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "组内比较那套训练，实际跑起来要配哪些参数", "want": "11.4.2", "sec": "11.4", "subs": ["11.4.2", "11.6.2", "11.4.3"], "picks": ["11.4 GRPO 训练", "11.6 完整训练流程实战", "11.2 数据集与奖励函数"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "游戏里跟NPC打字聊天的那个框怎么搭", "want": "15.6.2", "sec": "15.6", "subs": ["15.6.2", "15.6.1", "15.5.3"], "picks": ["15.6 前后端通信实现", "15.5 Godot 游戏场景构建", "15.2 NPC 智能体系统"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "它不是一个动作就完事，而是跟环境来回转圈，这个圈分哪几个阶段", "want": "1.2.2", "sec": "1.2", "subs": ["1.2.2", "1.3.3", "4.2.1"], "picks": ["1.2 智能体的构成与运行原理", "1.3 动手体验：5 分钟实现第一个智能体", "4.2 ReAct"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "几十年前那个「智能是一群小角色凑出来」的说法，后来在哪个方向上被真正用上了", "want": "2.3.3", "sec": "2.3", "subs": ["2.3.2", "2.3.3", "2.3.1"], "picks": ["2.3 马文·明斯基的心智社会", "6.2 框架一：AutoGen", "13.3 多智能体协作设计"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "让几个AI分别扮产品、开发、测试，凑成一个小组把一个网站做出来", "want": "6.2.2", "sec": "6.2", "subs": ["6.2.2", "6.2.1", "13.3.2"], "picks": ["6.2 框架一：AutoGen", "6.4 框架三：CAMEL", "13.3 多智能体协作设计"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "用节点和边串一个先听懂、再查、最后答的小流程", "want": "6.5.2", "sec": "6.5", "subs": ["6.5.1", "6.5.2", "4.3.1"], "picks": ["6.5 框架四：LangGraph", "4.3 Plan-and-Solve", "7.4 Agent范式的框架化实现"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "判断一批机器造出来的题目靠不靠谱，有哪几种打法", "want": "12.4.1", "sec": "12.4", "subs": ["12.4.1", "12.4.4", "12.4.5"], "picks": ["12.4 数据生成质量评估", "11.2 数据集与奖励函数", "12.1 智能体评估基础"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "前端调后端的那些请求，怎么统一包一层、超时设多长", "want": "13.5.3", "sec": "13.5", "subs": ["13.5.3", "13.5.1"], "picks": ["13.5 前端开发详解", "15.6 前后端通信实现", "13.6 功能实现详解"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "把老师那个仓库复制一份到自己账号下，之后还要能同步更新", "want": "16.3.2", "sec": "16.3", "subs": ["16.3.2", "16.5.1"], "picks": ["16.3 开发环境准备", "16.5 提交 Pull Request", "16.4 项目开发指南"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}], "n": 20, "old": 0.7, "new": 0.95, "fixed": 6, "broken": 1}, "43": {"label": "43 题开发集（40 题有标注）", "rows": [{"q": "智能从「人工设计规则」转向「从数据里学」的转折是怎么发生的？", "want": "2.4.1", "sec": "2.4", "subs": ["2.4.1", "2.4.4", "2.4.5"], "picks": ["2.4 学习范式的演进与现代智能体", "2.1 基于符号与逻辑的早期智能体", "3.1 语言模型与 Transformer 架构"], "rk_old": null, "rk_new": 1, "ok_old": false, "ok_new": true}, {"q": "最早靠前面几个词来预测下一个词的模型是怎么做的？", "want": "3.1.1", "sec": "3.1", "subs": ["3.1.1", "3.1.2"], "picks": ["3.1 语言模型与 Transformer 架构", "2.4 学习范式的演进与现代智能体", "3.3 大语言模型的缩放法则与局限性"], "rk_old": null, "rk_new": 1, "ok_old": false, "ok_new": true}, {"q": "一边推理一边调用工具的范式是怎么运作的？", "want": "4.2.1", "sec": "4.2", "subs": ["4.2.1", "4.2.3", "1.2.2"], "picks": ["4.2 ReAct", "4.3 Plan-and-Solve", "7.4 Agent范式的框架化实现"], "rk_old": null, "rk_new": 1, "ok_old": false, "ok_new": true}, {"q": "哪个框架的设计哲学是「用对话驱动多角色协作」？", "want": "6.2.1", "sec": "6.2", "subs": ["6.4.1", "6.2.1", "6.3.1"], "picks": ["6.2 框架一：AutoGen", "6.3 框架二：AgentScope", "6.4 框架三：CAMEL"], "rk_old": 1, "rk_new": 2, "ok_old": true, "ok_new": false}, {"q": "长时程任务里，用什么工具以 Markdown + YAML 记录进度和结论？", "want": "9.4.1", "sec": "9.4", "subs": ["9.4.2", "9.4.1", "9.4.3"], "picks": ["9.4 NoteTool：结构化笔记", "9.5 TerminalTool：即时文件系统访问", "9.3 在 Hello-Agents 中的实践：ContextBuilder"], "rk_old": 1, "rk_new": null, "ok_old": true, "ok_new": false}, {"q": "智能体内部「先想、再动手、再看结果」这个循环怎么称呼？", "want": "1.3.3", "sec": "1.3", "subs": ["4.2.1", "1.2.2", "1.3.3"], "picks": ["4.2 ReAct", "4.3 Plan-and-Solve", "4.4 Reflection"], "rk_old": null, "rk_new": null, "ok_old": false, "ok_new": false}, {"q": "能感知环境并自主采取行动的系统，指的是什么？", "want": "1.1.1", "sec": "1.1", "subs": ["1.1.1", "1.1.3", "1.2.3"], "picks": ["1.1 什么是智能体？", "1.2 智能体的构成与运行原理", "2.1 基于符号与逻辑的早期智能体"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "用什么框架来描述一个智能体的任务环境？", "want": "1.2.1", "sec": "1.2", "subs": ["1.2.1", "1.2.2"], "picks": ["1.2 智能体的构成与运行原理", "7.3 框架接口实现", "13.1 项目概述与架构设计"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "任务环境里的性能度量、环境、执行器、传感器这四个东西合起来叫什么？", "want": "1.2.1", "sec": "1.2", "subs": ["1.2.1"], "picks": ["1.2 智能体的构成与运行原理", "1.1 什么是智能体？", "4.1 环境准备与基础工具定义"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "实际应用里，智能体跟人的关系可以分成哪两种角色？", "want": "1.4.1 / 1.4.2", "sec": "1.4", "subs": ["1.4.1", "1.4.2"], "picks": ["1.4 智能体应用的协作模式", "13.3 多智能体协作设计", "2.3 马文·明斯基的心智社会"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "早期认为智能可以用符号和逻辑形式化表达的流派叫什么？", "want": "2.1.1", "sec": "2.1", "subs": ["2.1.1", "2.1.4", "2.4.1"], "picks": ["2.1 基于符号与逻辑的早期智能体", "2.4 学习范式的演进与现代智能体", "2.2 构建基于规则的聊天机器人"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "麻省理工那个模拟心理治疗师说话的早期聊天程序叫什么？", "want": "2.2.1", "sec": "2.2", "subs": ["2.2.1", "2.2.2", "2.2.3"], "picks": ["2.2 构建基于规则的聊天机器人", "2.1 基于符号与逻辑的早期智能体", "2.3 马文·明斯基的心智社会"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "谁提出智能来自许多简单个体协作，而不是一个中心推理引擎？", "want": "2.3.1 / 2.3.2", "sec": "2.3", "subs": ["2.3.2", "2.3.1", "2.3.3"], "picks": ["2.3 马文·明斯基的心智社会", "2.1 基于符号与逻辑的早期智能体", "1.4 智能体应用的协作模式"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "和模型沟通时，怎么设计输入措辞才拿到想要的输出？", "want": "3.2.1", "sec": "3.2", "subs": ["3.2.1", "3.2.4"], "picks": ["3.2 与大语言模型交互", "9.1 什么是上下文工程", "9.2 为什么上下文工程重要"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "模型越大能力越强，这个规律叫什么？它有什么代价？", "want": "3.3.1", "sec": "3.3", "subs": ["3.3.1", "3.3.2"], "picks": ["3.3 大语言模型的缩放法则与局限性", "3.1 语言模型与 Transformer 架构", "11.5 模型评估与分析"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "先把任务拆成完整计划、再一步步执行，这种范式叫什么？", "want": "4.3.1", "sec": "4.3", "subs": ["4.3.1", "4.3.2", "4.3.3"], "picks": ["4.3 Plan-and-Solve", "4.2 ReAct", "7.4 Agent范式的框架化实现"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "智能体生成答案之后，怎么自我批评并改进？", "want": "4.4.1", "sec": "4.4", "subs": ["4.4.1", "4.4.3", "4.4.5"], "picks": ["4.4 Reflection", "11.4 GRPO 训练", "12.1 智能体评估基础"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "哪个平台是开源的，还融合了后端即服务和 LLMOps 理念？", "want": "5.3.1", "sec": "5.3", "subs": ["5.3.1", "5.3.3"], "picks": ["5.3 平台二：Dify", "5.2 平台一：Coze（[coze.cn](https://www.coze.cn/home)）", "5.4 平台三：FastGPT"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "哪个平台核心定位是知识库问答和 RAG？", "want": "5.4.1", "sec": "5.4", "subs": ["5.4.1", "5.4.3", "8.3.1"], "picks": ["5.4 平台三：FastGPT", "8.3 RAG系统：知识检索增强", "5.2 平台一：Coze（[coze.cn](https://www.coze.cn/home)）"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "哪个平台本质上是通用工作流自动化、大模型只是其中一环？", "want": "5.5.1", "sec": "5.5", "subs": ["5.5.1", "5.5.5", "5.1.2"], "picks": ["5.5 平台四：n8n", "5.1 平台化构建的兴起", "6.1 从手动实现到框架开发"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "用状态图来编排智能体流程的框架是哪个？", "want": "6.5.1", "sec": "6.5", "subs": ["6.5.1", "6.5.3", "6.1.2"], "picks": ["6.5 框架四：LangGraph", "6.1 从手动实现到框架开发", "7.1 框架整体架构设计"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "阿里达摩院做的、强调工程化和高可靠的多智能体平台是哪个？", "want": "6.3.1", "sec": "6.3", "subs": [], "picks": ["6.3 框架二：AgentScope", "6.2 框架一：AutoGen", "6.4 框架三：CAMEL"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "只靠两个智能体角色扮演、几乎不要人干预就能解决问题的框架？", "want": "6.4.1", "sec": "6.4", "subs": ["6.4.1", "6.4.2", "6.2.1"], "picks": ["6.4 框架三：CAMEL", "6.2 框架一：AutoGen", "6.3 框架二：AgentScope"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "市面上已经有那么多框架了，为什么还要自己造一个？", "want": "7.1.1", "sec": "7.1", "subs": ["7.1.1", "6.1.1", "6.1.2"], "picks": ["6.1 从手动实现到框架开发", "7.1 框架整体架构设计", "5.1 平台化构建的兴起"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "框架里怎么统一管理一大堆工具，让模型知道有哪些可用？", "want": "7.5.1", "sec": "7.5", "subs": ["7.5.1", "7.5.4", "7.5.2"], "picks": ["7.5 工具系统", "7.3 框架接口实现", "10.2 MCP 协议实战"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "智能体的长期记忆借鉴了哪些认知科学的结论？", "want": "8.1.1", "sec": "8.1", "subs": ["8.1.1", "8.2.5", "8.1.2"], "picks": ["8.1 从认知科学到智能体记忆", "8.2 记忆系统：让智能体拥有记忆", "2.3 马文·明斯基的心智社会"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "记忆系统整体上是按什么流程运转的？", "want": "8.2.1", "sec": "8.2", "subs": ["8.2.1", "8.1.3", "8.2.4"], "picks": ["8.2 记忆系统：让智能体拥有记忆", "8.1 从认知科学到智能体记忆", "9.3 在 Hello-Agents 中的实践：ContextBuilder"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "先检索外部资料再让模型生成答案，这套做法叫什么？", "want": "8.3.1", "sec": "8.3", "subs": ["8.3.1", "8.3.2"], "picks": ["8.3 RAG系统：知识检索增强", "8.4 构建智能文档问答助手", "9.1 什么是上下文工程"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "上下文塞得太长，模型反而变糊涂，这个现象叫什么？", "want": "9.2.0", "sec": "9.2", "subs": ["9.2.1", "9.2.3"], "picks": ["9.2 为什么上下文工程重要", "9.1 什么是上下文工程", "9.3 在 Hello-Agents 中的实践：ContextBuilder"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "智能体怎么像插 USB-C 一样接入各种各样的外部工具？", "want": "10.2.1", "sec": "10.2", "subs": ["10.2.1", "10.2.4", "10.1.2"], "picks": ["10.2 MCP 协议实战", "10.5 构建自定义 MCP 服务器", "13.4 MCP 工具集成详解"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "智能体和智能体之间直接通信协作，靠的是什么协议？", "want": "10.3.1", "sec": "10.3", "subs": ["10.3.1", "10.3.2", "10.1.2"], "picks": ["10.3 A2A 协议实战", "10.1 智能体通信协议基础", "10.4 ANP 协议实战"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "面向大规模开放网络环境做智能体管理的协议是哪个？", "want": "10.4.1", "sec": "10.4", "subs": ["10.4.1", "10.4.2", "10.1.2"], "picks": ["10.4 ANP 协议实战", "10.1 智能体通信协议基础", "10.3 A2A 协议实战"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "不训练价值网络、靠组内相对比较的强化学习方法叫什么？", "want": "11.4.1", "sec": "11.4", "subs": ["11.4.1", "11.4.2", "11.1.3"], "picks": ["11.4 GRPO 训练", "11.1 从 LLM 训练到 Agentic RL", "11.2 数据集与奖励函数"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "正式强化学习之前，那个让模型先学会输出格式的步骤是什么？", "want": "11.3.1", "sec": "11.3", "subs": ["11.3.1", "11.3.3", "11.1.2"], "picks": ["11.3 SFT 训练", "11.1 从 LLM 训练到 Agentic RL", "11.2 数据集与奖励函数"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "怎么衡量一个模型的函数调用能力？", "want": "12.2.1", "sec": "12.2", "subs": ["12.2.1", "12.2.3", "12.1.2"], "picks": ["12.2 BFCL：工具调用能力评估", "12.1 智能体评估基础", "11.5 模型评估与分析"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "评估通用 AI 助手解决真实世界问题的基准是哪个？", "want": "12.3.1", "sec": "12.3", "subs": ["12.3.1", "12.1.2"], "picks": ["12.3 GAIA：通用 AI 助手能力评估", "12.1 智能体评估基础", "12.2 BFCL：工具调用能力评估"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "旅行助手为什么不直接调地图 API，而要包一层协议？", "want": "13.4.1", "sec": "13.4", "subs": ["13.4.1", "13.4.2", "10.2.1"], "picks": ["13.4 MCP 工具集成详解", "10.2 MCP 协议实战", "10.5 构建自定义 MCP 服务器"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "深度研究任务怎么拆成一堆子任务逐个完成？", "want": "14.2.1", "sec": "14.2", "subs": ["14.2.1", "14.2.2", "14.5.1"], "picks": ["14.2 TODO 驱动的研究范式", "14.3 智能体系统设计", "9.4 NoteTool：结构化笔记"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "NPC 对玩家的态度怎么用数值分级？", "want": "15.3.1", "sec": "15.3", "subs": ["15.3.1", "15.3.2", "15.3.3"], "picks": ["15.3 好感度系统设计", "15.2 NPC 智能体系统", "13.3 多智能体协作设计"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}, {"q": "想做一个拿得出手的项目，选题有什么原则？", "want": "16.2.1", "sec": "16.2", "subs": ["16.2.1", "16.2.2", "16.1.2"], "picks": ["16.2 项目选题指南", "16.1 毕业设计的意义", "16.4 项目开发指南"], "rk_old": 1, "rk_new": 1, "ok_old": true, "ok_new": true}], "n": 40, "old": 0.9, "new": 0.925, "fixed": 3, "broken": 2}};
+let cur = "h3", filter = "all";
+
+const pct = x => (x * 100).toFixed(1) + "%";
+
+function renderTabs() {
+  const t = document.getElementById("tabs");
+  t.innerHTML = Object.entries(DATA).map(([k, v]) =>
+    `<div class="tab ${k === cur ? "on" : ""}" data-k="${k}">${v.label}</div>`).join("");
+  t.querySelectorAll(".tab").forEach(el => el.onclick = () => { cur = el.dataset.k; render(); });
+}
+
+function renderFilters() {
+  const f = document.getElementById("filters");
+  const opts = [["all", "全部"], ["fixed", "只看被救回的"], ["bad", "只看错的"]];
+  f.innerHTML = opts.map(([k, l]) =>
+    `<div class="tab ${k === filter ? "on" : ""}" data-f="${k}">${l}</div>`).join("");
+  f.querySelectorAll(".tab").forEach(el => el.onclick = () => { filter = el.dataset.f; render(); });
+}
+
+function renderKpis() {
+  const d = DATA[cur];
+  document.getElementById("kpis").innerHTML = `
+    <div class="kpi"><b>${pct(d.old)}</b><span>旧：章节路由命中</span></div>
+    <div class="kpi"><b>${pct(d.new)}</b><span>新：小节直选命中</span></div>
+    <div class="kpi"><b>${d.fixed}</b><span>被救回的题</span></div>
+    <div class="kpi"><b>${d.broken}</b><span>被弄坏的题</span></div>
+    <div class="kpi"><b>${d.n}</b><span>题量</span></div>`;
+}
+
+function render() {
+  renderTabs(); renderFilters(); renderKpis();
+  const d = DATA[cur];
+  document.getElementById("sub").textContent =
+    `${d.label}：旧 ${pct(d.old)} → 新 ${pct(d.new)}（小节级 @1）`;
+
+  let rows = d.rows;
+  if (filter === "fixed") rows = rows.filter(r => r.ok_new && !r.ok_old);
+  if (filter === "bad") rows = rows.filter(r => !r.ok_new);
+
+  document.getElementById("rows").innerHTML = rows.map(r => {
+    const oldChips = r.picks.length
+      ? r.picks.map(p => `<span class="chip ${p.startsWith(r.sec) ? "hit" : ""}">${p}</span>`).join("")
+      : `<span class="dim">—</span>`;
+    const newChips = r.subs.length
+      ? r.subs.map(s => `<span class="chip ${r.want.split(" / ").includes(s) ? "hit" : ""}">${s}</span>`).join("")
+      : `<span class="dim">—</span>`;
+    let verdict;
+    if (r.ok_new && !r.ok_old) verdict = `<span class="ok">救回</span>`;
+    else if (r.ok_old && !r.ok_new) verdict = `<span class="bad">弄坏</span>`;
+    else if (r.ok_new) verdict = `<span class="dim">都对</span>`;
+    else verdict = `<span class="bad">都没中</span>`;
+    return `<tr>
+      <td class="q">${r.q}</td>
+      <td class="mono">${r.want}</td>
+      <td class="mono">${oldChips}</td>
+      <td class="mono">${newChips}</td>
+      <td>${verdict}</td></tr>`;
+  }).join("") || `<tr><td colspan="5" class="empty">这个筛选下没有题</td></tr>`;
+}
+
+document.getElementById("go").onclick = async () => {
+  const q = document.getElementById("q").value.trim();
+  const out = document.getElementById("out");
+  if (!q) return;
+  const btn = document.getElementById("go");
+  btn.disabled = true; out.innerHTML = `<div class="empty">检索中…（首次会加载模型，约 20 秒）</div>`;
+  try {
+    const r = await fetch("/search", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ q, k: 3 })
+    });
+    const d = await r.json();
+    if (d.error) throw new Error(d.error);
+    const mode = d.mode === "subs"
+      ? `<span class="ok">小节直选生效</span>：${d.subs.join(" / ")}`
+      : `<span class="dim">纯检索（${d.note || "未启用小节直选"}）</span>`;
+    out.innerHTML = `<div class="hit"><h4>${mode}</h4>
+      <div class="dim" style="font-size:12.5px">耗时 ${d.elapsed_ms} ms</div></div>` +
+      d.hits.map(h => `<div class="hit">
+        <h4>${h.rank}. ${h.title} <span class="dim mono">精排 ${h.score}</span></h4>
+        <div style="margin-bottom:6px">${h.sub.map(s => `<span class="chip">${s}</span>`).join("")}</div>
+        <div class="snip">${h.snippet}…</div></div>`).join("");
+  } catch (e) {
+    out.innerHTML = `<div class="empty">调不通：${e.message}<br>
+      先在本目录运行 <span class="mono">python api.py</span>，再用 http://127.0.0.1:8000 打开本页。</div>`;
+  } finally { btn.disabled = false; }
+};
+
+render();
+</script>
+</body>
+</html>
