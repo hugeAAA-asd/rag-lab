@@ -20,8 +20,46 @@ __pycache__/
 *.npy
 
 # 运行日志
+#
+# 注意：这里排除的是**运行输出**，不是实验记录。README 引用的实验结论
+# 都写在 README 正文里，日志只是当时的打印，不入库。
 *.log
 
-# 注意：rewrites.json / routes.json / route_cache_oral.json 是**有意入库**的。
-# 路由要调 LLM，判别有非确定性，同一配置跑两次 @1 会差一题（见 README ⑥）。
-# 把缓存提交上去，别人 clone 下来复跑才能得到和 README 一样的数字。
+# ── 有意入库的数据文件（不要加进上面的忽略规则）────────────────
+#
+# 判断标准只有一条：没有它，别人 clone 下来跑不出 README 那张表。
+#
+#   chunks_meta.json        块 id → 标题/所属小节（reproduce.py 靠它，免加载模型）
+#   subs_index.json         章节 → 小节清单（路由目录的来源）
+#   allsub_pools_*.json     四套题的候选池 + 精排分（复现的核心，共 ~1.9MB）
+#   allsub_cache_*.json     小节选择的 LLM 原始输出（避免复现时再调一次 API）
+#   route_cache*.json       章节路由缓存（同上）
+#   rewrites.json           查询改写缓存（同上）
+#
+# 为什么不忽略：路由和改写都要调 LLM，判别有非确定性，同一配置跑两次
+# @1 会差一题（见 README ⑥）。缓存入库，别人复跑才能得到和 README 一样的数。
+#
+# 反过来，下面这些**不该**入库：一次性实验的打印、临时对拍文件、
+# exp_*.py 产出的中间态。它们可以重算，留着只会让仓库变脏。
+
+# ── 一次性实验产物（可重算，不入库）──────────────────────────
+#
+# 判断标准同上：没有它，README 的表还用不用得出来？用不出来才留。
+# 下面这些是中途某一版的候选池/选择结果，被最终配置取代了：
+#   pools_*.json             候选池的 sub1/sub2/subtitle 各种变体
+#   exp_*.json               各次加分扫描的中间态
+#   sub_pools_*.json         两级方案（已废弃）的池子
+#   eval_holdout*_pools.json 留出集的池子（结果 json 保留，池子不留）
+exp_*.json
+pools_*.json
+sub_pools_*.json
+sub_route*.json
+sub_cache_*.json
+eval_holdout*_pools.json
+sections_h3.json
+
+# 临时文件与导出
+*.bak
+*.tmp
+2026-10-30-*.html
+2026-10-30-*.pdf

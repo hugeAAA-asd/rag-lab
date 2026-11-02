@@ -9,26 +9,13 @@
 
 改写结果用 rewrites.json 缓存，路由结果用 routes.json 缓存，避免重复烧 token。
 """
-import json
-import os
 import time
 
 from eval import CASES, chunks
-from rewrite import search_multi, rewrite, load_cache, save_cache
-from exp_route import route
+from metrics import header, row
+from rewrite import search_multi, rewrite
+from route import route
 from llm import load_key
-
-ROUTE_CACHE = "routes.json"
-
-
-def load_routes():
-    if os.path.exists(ROUTE_CACHE):
-        return json.load(open(ROUTE_CACHE, encoding="utf-8"))
-    return {}
-
-
-def save_routes(d):
-    json.dump(d, open(ROUTE_CACHE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
 
 def rank_of(hits, answers):
@@ -48,51 +35,28 @@ def main():
         print("没找到 DEEPSEEK_API_KEY")
         raise SystemExit(1)
 
-    # ① 路由缓存
-    rc = load_routes()
-    routes = {}
-    for q, _a, _k in CASES:
-        if q not in rc:
-            picks, raw = route(q, key)
-            rc[q] = picks
-            save_routes(rc)
-            print("  路由 %s → %s" % (q[:30], picks[:2]))
-        routes[q] = rc[q]
-
-    # ② 改写缓存
-    wc = load_cache()
-    rews = {}
-    for q, _a, _k in CASES:
-        if q not in wc:
-            wc[q] = rewrite(q, key)
-            save_cache(wc)
-        rews[q] = wc[q]
+    # 路由和改写都自带缓存（route_cache.json / rewrites.json），
+    # 所以两次评估用的是同一份输入，剩下的差异才真的是方案差异
+    routes = {q: route(q, key)[0] for q, _a, _k in CASES}
+    rews = {q: rewrite(q, key) for q, _a, _k in CASES}
 
     N = len(CASES)
     print("\n两组各 %d 题，开始\n" % N)
 
-    print("%-16s %14s %14s %8s" % ("方案", "@1", "@3", "耗时"))
-    print("-" * 58)
+    header()
     detail = {}
     for tag, use_picks, bonus in GROUPS:
-        h1 = h3 = 0
         ranks = []
         t0 = time.time()
         for q, answers, kind in CASES:
             hits = search_multi(q, rews[q],
                                 picks=routes[q] if use_picks else None,
                                 bonus=bonus)
-            r = rank_of(hits, answers)
-            ranks.append((q, r))
-            if r == 1:
-                h1 += 1
-            if r:
-                h3 += 1
+            ranks.append(rank_of(hits, answers))
         dt = time.time() - t0
-        detail[tag] = ranks
-        print("%-16s %6d/%-2d %.3f %6d/%-2d %.3f %7.0fs"
-              % (tag, h1, N, h1 / N, h3, N, h3 / N, dt))
-    print("-" * 58)
+        detail[tag] = list(zip([q for q, _a, _k in CASES], ranks))
+        print(row(tag, ranks, dt))
+    print("-" * 52)
     print("基线（无改写无路由）@1 0.651  @3 0.907")
 
     # ③ 谁被弄坏了（只在 A/B 两组都跑过时才有得比）
