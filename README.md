@@ -1,5 +1,7 @@
 # rag-lab
 
+**在线看** → <https://hugeaaa-asd.github.io/rag-lab/>　｜　逐题对照「旧：章节路由 vs 新：小节直选」，点开即看，不用装任何东西。
+
 一个**只为搞清楚一件事**而写的 RAG 实验仓库：当检索链路上每一环都可以换参数时，到底哪一环在真正决定效果。
 
 语料是一本开源技术书《Hello-Agents》的全部 16 章 Markdown（切 1177 块），自建 103 题四套基准，口径是**小节级 Recall@1/@3**（`8.3.4` 这一节，不是「章」——章对了块错了不算成功）。
@@ -14,6 +16,8 @@
 **只想核对数字**（不装依赖、不下载模型、不调 API，约 1 秒）：
 
 ```bash
+git clone https://github.com/hugeAAA-asd/rag-lab.git
+cd rag-lab
 python reproduce.py
 ```
 
@@ -384,7 +388,9 @@ python api.py            # http://127.0.0.1:8000
 python api.py --no-route # 不调 LLM，只用检索（不需要 key）
 ```
 
-**还没做到的**：没有在线链接。静态页可以直接挂 GitHub Pages / 任何静态托管，但 `api.py` 需要 500MB 模型和一个运行环境，得先有仓库和部署账号。本地已完整验证（`GET /` 200、`/healthz` 报 `chunks: 1177`、路由模式命中 7.4.1 SimpleAgent，精排 0.9694）。
+**在线版**：<https://hugeaaa-asd.github.io/rag-lab/>。静态页挂在 GitHub Pages，源目录是 `docs/`（由 `build_demo.py` 一起生成，和 `demo.html` 同内容）。
+
+在线版只有离线算好的对照数据。「现场试一句」需要后端，Pages 上必然 404——页面对此的文案是「说明分工」，不是报错：在线看数据，想试检索就在本机 `python api.py`。`api.py` 要 500MB 模型和运行环境，没往公有云放（也不想把 key 放上去）。本地已完整验证（`GET /` 200、`/healthz` 报 `chunks: 1177`、路由模式命中 7.4.1 SimpleAgent，精排 0.9694）。
 
 ---
 
