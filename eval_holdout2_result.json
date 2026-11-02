@@ -1,0 +1,437 @@
+[
+ {
+  "n": 1,
+  "name": "ReAct局限",
+  "style": "oral",
+  "q": "边想边干这招有啥毛病",
+  "sec": "## 4.2 ",
+  "subs": [
+   "4.2.4"
+  ],
+  "picks": [
+   "## 4.2 ReAct",
+   "## 4.4 Reflection",
+   "## 9.2 为什么上下文工程重要"
+  ],
+  "routed": true,
+  "raw_sec": null,
+  "raw_sub": null,
+  "rw_sec": null,
+  "rw_sub": null,
+  "all_sec": 1,
+  "all_sub": null
+ },
+ {
+  "n": 2,
+  "name": "RAG原理",
+  "style": "oral",
+  "q": "它先去翻完资料再开口，中间怎么串的",
+  "sec": "## 8.3 ",
+  "subs": [
+   "8.3.2"
+  ],
+  "picks": [
+   "## 8.3 RAG系统：知识检索增强",
+   "## 9.1 什么是上下文工程",
+   "## 9.3 在 Hello-Agents 中的实践：ContextBuilder"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": null,
+  "rw_sec": 1,
+  "rw_sub": null,
+  "all_sec": 1,
+  "all_sub": null
+ },
+ {
+  "n": 3,
+  "name": "Terminal功能",
+  "style": "oral",
+  "q": "让它敲命令那个工具到底能干几件事",
+  "sec": "## 9.5 ",
+  "subs": [
+   "9.5.2"
+  ],
+  "picks": [
+   "## 9.5 TerminalTool：即时文件系统访问",
+   "## 9.4 NoteTool：结构化笔记",
+   "## 9.6 长程智能体实战：代码库维护助手"
+  ],
+  "routed": true,
+  "raw_sec": null,
+  "raw_sub": null,
+  "rw_sec": null,
+  "rw_sub": null,
+  "all_sec": 1,
+  "all_sub": null
+ },
+ {
+  "n": 4,
+  "name": "自定义MCP",
+  "style": "oral",
+  "q": "公司内部的数据想让它也能调，咋办",
+  "sec": "## 10.5 ",
+  "subs": [
+   "10.5.1"
+  ],
+  "picks": [
+   "## 10.2 MCP 协议实战",
+   "## 10.5 构建自定义 MCP 服务器",
+   "## 8.3 RAG系统：知识检索增强"
+  ],
+  "routed": true,
+  "raw_sec": null,
+  "raw_sub": null,
+  "rw_sec": null,
+  "rw_sub": null,
+  "all_sec": 2,
+  "all_sub": 2
+ },
+ {
+  "n": 5,
+  "name": "评估基准",
+  "style": "oral",
+  "q": "比智能体能耐，现在都有哪些公认的考卷",
+  "sec": "## 12.1 ",
+  "subs": [
+   "12.1.2"
+  ],
+  "picks": [
+   "## 12.1 智能体评估基础",
+   "## 12.2 BFCL：工具调用能力评估",
+   "## 12.3 GAIA：通用 AI 助手能力评估"
+  ],
+  "routed": true,
+  "raw_sec": 2,
+  "raw_sub": 2,
+  "rw_sec": 2,
+  "rw_sub": 2,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 6,
+  "name": "任务规划",
+  "style": "oral",
+  "q": "谁负责把一个大课题拆成几件小事",
+  "sec": "## 14.5 ",
+  "subs": [
+   "14.5.1"
+  ],
+  "picks": [
+   "## 14.2 TODO 驱动的研究范式",
+   "## 4.3 Plan-and-Solve",
+   "## 13.3 多智能体协作设计"
+  ],
+  "routed": false,
+  "raw_sec": null,
+  "raw_sub": null,
+  "rw_sec": null,
+  "rw_sub": null,
+  "all_sec": null,
+  "all_sub": null
+ },
+ {
+  "n": 7,
+  "name": "工具链",
+  "style": "oral",
+  "q": "干一件事要连着用好几个工具，怎么串起来",
+  "sec": "## 7.5 ",
+  "subs": [
+   "7.5.4"
+  ],
+  "picks": [
+   "## 4.2 ReAct",
+   "## 4.3 Plan-and-Solve",
+   "## 13.4 MCP 工具集成详解"
+  ],
+  "routed": false,
+  "raw_sec": 2,
+  "raw_sub": 2,
+  "rw_sec": 2,
+  "rw_sub": 2,
+  "all_sec": null,
+  "all_sub": null
+ },
+ {
+  "n": 8,
+  "name": "NPC行为",
+  "style": "oral",
+  "q": "游戏里NPC怎么自己晃悠、人凑近就搭话",
+  "sec": "## 15.5 ",
+  "subs": [
+   "15.5.3"
+  ],
+  "picks": [
+   "## 15.2 NPC 智能体系统",
+   "## 15.3 好感度系统设计",
+   "## 15.5 Godot 游戏场景构建"
+  ],
+  "routed": true,
+  "raw_sec": 2,
+  "raw_sub": 2,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 2,
+  "all_sub": 2
+ },
+ {
+  "n": 9,
+  "name": "模型选择",
+  "style": "oral",
+  "q": "模型这么多，挑哪个合适",
+  "sec": "## 3.2 ",
+  "subs": [
+   "3.2.4"
+  ],
+  "picks": [],
+  "routed": false,
+  "raw_sec": 2,
+  "raw_sub": 2,
+  "rw_sec": 2,
+  "rw_sub": 2,
+  "all_sec": 2,
+  "all_sub": 2
+ },
+ {
+  "n": 10,
+  "name": "记忆分层",
+  "style": "oral",
+  "q": "记忆那块为啥要拆成两层来管",
+  "sec": "## 8.2 ",
+  "subs": [
+   "8.2.4"
+  ],
+  "picks": [
+   "## 8.1 从认知科学到智能体记忆",
+   "## 8.2 记忆系统：让智能体拥有记忆",
+   "## 9.1 什么是上下文工程"
+  ],
+  "routed": true,
+  "raw_sec": null,
+  "raw_sub": null,
+  "rw_sec": null,
+  "rw_sub": null,
+  "all_sec": 2,
+  "all_sub": 2
+ },
+ {
+  "n": 11,
+  "name": "符号主义挑战",
+  "style": "indirect",
+  "q": "光靠人一条条写规则那条路，后来撞上了什么过不去的东西",
+  "sec": "## 2.1 ",
+  "subs": [
+   "2.1.4"
+  ],
+  "picks": [
+   "## 2.1 基于符号与逻辑的早期智能体",
+   "## 2.4 学习范式的演进与现代智能体",
+   "## 3.3 大语言模型的缩放法则与局限性"
+  ],
+  "routed": true,
+  "raw_sec": 2,
+  "raw_sub": 2,
+  "rw_sec": 2,
+  "rw_sub": 2,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 12,
+  "name": "LLM智能体",
+  "style": "indirect",
+  "q": "今天这一代智能体，是拿什么当脑子的",
+  "sec": "## 2.4 ",
+  "subs": [
+   "2.4.4"
+  ],
+  "picks": [
+   "## 3.1 语言模型与 Transformer 架构",
+   "## 3.2 与大语言模型交互",
+   "## 1.2 智能体的构成与运行原理"
+  ],
+  "routed": false,
+  "raw_sec": 3,
+  "raw_sub": null,
+  "rw_sec": 3,
+  "rw_sub": null,
+  "all_sec": null,
+  "all_sub": null
+ },
+ {
+  "n": 13,
+  "name": "Transformer",
+  "style": "indirect",
+  "q": "扔掉循环结构、全靠注意力并行算的那个网络",
+  "sec": "## 3.1 ",
+  "subs": [
+   "3.1.2"
+  ],
+  "picks": [
+   "## 3.1 语言模型与 Transformer 架构",
+   "## 3.3 大语言模型的缩放法则与局限性",
+   "## 2.4 学习范式的演进与现代智能体"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 14,
+  "name": "LangGraph优劣",
+  "style": "indirect",
+  "q": "把流程画成节点和边的那种框架，好在哪、差在哪",
+  "sec": "## 6.5 ",
+  "subs": [
+   "6.5.3"
+  ],
+  "picks": [
+   "## 6.5 框架四：LangGraph",
+   "## 6.1 从手动实现到框架开发",
+   "## 7.1 框架整体架构设计"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 15,
+  "name": "Agent基类",
+  "style": "indirect",
+  "q": "框架里那个所有智能体都得继承、只管定接口不管实现的模板",
+  "sec": "## 7.3 ",
+  "subs": [
+   "7.3.3"
+  ],
+  "picks": [
+   "## 7.3 框架接口实现",
+   "## 7.1 框架整体架构设计",
+   "## 6.1 从手动实现到框架开发"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 16,
+  "name": "JIT上下文",
+  "style": "indirect",
+  "q": "资料太多塞不下，改成要用的时候再去取，这叫啥思路",
+  "sec": "## 9.2 ",
+  "subs": [
+   "9.2.2"
+  ],
+  "picks": [
+   "## 8.3 RAG系统：知识检索增强",
+   "## 9.1 什么是上下文工程",
+   "## 9.2 为什么上下文工程重要"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": null,
+  "rw_sec": 1,
+  "rw_sub": null,
+  "all_sec": 3,
+  "all_sub": null
+ },
+ {
+  "n": 17,
+  "name": "自动检测",
+  "style": "indirect",
+  "q": "没告诉它你用的哪家服务，它自己怎么就认出来了",
+  "sec": "## 7.2 ",
+  "subs": [
+   "7.2.3"
+  ],
+  "picks": [
+   "## 10.2 MCP 协议实战",
+   "## 13.4 MCP 工具集成详解",
+   "## 9.1 什么是上下文工程"
+  ],
+  "routed": false,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 3,
+  "all_sub": 3
+ },
+ {
+  "n": 18,
+  "name": "自底向上建模",
+  "style": "indirect",
+  "q": "先把最小的零件定死，再一层层拼成复杂结构",
+  "sec": "## 13.2 ",
+  "subs": [
+   "13.2.4"
+  ],
+  "picks": [
+   "## 1.2 智能体的构成与运行原理",
+   "## 7.1 框架整体架构设计",
+   "## 13.2 数据模型设计"
+  ],
+  "routed": true,
+  "raw_sec": null,
+  "raw_sub": null,
+  "rw_sec": null,
+  "rw_sub": null,
+  "all_sec": null,
+  "all_sub": null
+ },
+ {
+  "n": 19,
+  "name": "多智能体角色",
+  "style": "indirect",
+  "q": "做个旅行助手为啥要拆成好几个各管一段的角色",
+  "sec": "## 13.3 ",
+  "subs": [
+   "13.3.2"
+  ],
+  "picks": [
+   "## 4.4 Reflection",
+   "## 13.3 多智能体协作设计"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 2,
+  "all_sub": 2
+ },
+ {
+  "n": 20,
+  "name": "ANP服务发现",
+  "style": "indirect",
+  "q": "服务一多，怎么知道哪个能干什么、上哪儿找它",
+  "sec": "## 10.4 ",
+  "subs": [
+   "10.4.2"
+  ],
+  "picks": [
+   "## 10.1 智能体通信协议基础",
+   "## 10.4 ANP 协议实战",
+   "## 11.1 从 LLM 训练到 Agentic RL"
+  ],
+  "routed": true,
+  "raw_sec": null,
+  "raw_sub": null,
+  "rw_sec": null,
+  "rw_sub": null,
+  "all_sec": 2,
+  "all_sub": null
+ }
+]

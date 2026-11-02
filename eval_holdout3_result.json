@@ -1,0 +1,442 @@
+[
+ {
+  "n": 1,
+  "name": "ELIZA匹配",
+  "style": "oral",
+  "q": "早期那种聊天程序，是怎么从我说的句子里挑出关键词再接一句的",
+  "sec": "## 2.2 ",
+  "subs": [
+   "2.2.2"
+  ],
+  "picks": [
+   "## 2.2 构建基于规则的聊天机器人",
+   "## 2.1 基于符号与逻辑的早期智能体",
+   "## 2.4 学习范式的演进与现代智能体"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 2,
+  "name": "分词",
+  "style": "oral",
+  "q": "模型看不懂字，得先切成它认识的小块，这步怎么做的",
+  "sec": "## 3.2 ",
+  "subs": [
+   "3.2.2"
+  ],
+  "picks": [
+   "## 3.1 语言模型与 Transformer 架构",
+   "## 8.3 RAG系统：知识检索增强",
+   "## 4.1 环境准备与基础工具定义"
+  ],
+  "routed": false,
+  "raw_sec": 2,
+  "raw_sub": 2,
+  "rw_sec": 2,
+  "rw_sub": 2,
+  "all_sec": null,
+  "all_sub": null
+ },
+ {
+  "n": 3,
+  "name": "执行器",
+  "style": "oral",
+  "q": "计划列好了，谁去一步步做、上一步的结果怎么带给下一步",
+  "sec": "## 4.3 ",
+  "subs": [
+   "4.3.3"
+  ],
+  "picks": [
+   "## 4.3 Plan-and-Solve",
+   "## 6.5 框架四：LangGraph",
+   "## 7.4 Agent范式的框架化实现"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": null,
+  "rw_sec": 1,
+  "rw_sub": null,
+  "all_sec": 1,
+  "all_sub": null
+ },
+ {
+  "n": 4,
+  "name": "反思成本",
+  "style": "oral",
+  "q": "让它自己反复返工，划算吗，代价在哪儿",
+  "sec": "## 4.4 ",
+  "subs": [
+   "4.4.5"
+  ],
+  "picks": [
+   "## 4.4 Reflection",
+   "## 9.2 为什么上下文工程重要",
+   "## 11.4 GRPO 训练"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 5,
+  "name": "邮件助手",
+  "style": "oral",
+  "q": "收邮件、看明白啥意思、再回一封，这一整套怎么自动搭起来",
+  "sec": "## 5.5 ",
+  "subs": [
+   "5.5.2"
+  ],
+  "picks": [
+   "## 5.5 平台四：n8n",
+   "## 10.2 MCP 协议实战",
+   "## 1.4 智能体应用的协作模式"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": null,
+  "rw_sec": 1,
+  "rw_sub": null,
+  "all_sec": 1,
+  "all_sub": null
+ },
+ {
+  "n": 6,
+  "name": "SimpleAgent",
+  "style": "oral",
+  "q": "框架里最基础那个能对话的智能体，想写一个自己的",
+  "sec": "## 7.4 ",
+  "subs": [
+   "7.4.1"
+  ],
+  "picks": [
+   "## 7.4 Agent范式的框架化实现",
+   "## 7.3 框架接口实现",
+   "## 4.2 ReAct"
+  ],
+  "routed": true,
+  "raw_sec": null,
+  "raw_sub": null,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 7,
+  "name": "问答助手类",
+  "style": "oral",
+  "q": "把文档问答做成一个类，那个类里都装了些什么",
+  "sec": "## 8.4 ",
+  "subs": [
+   "8.4.2"
+  ],
+  "picks": [
+   "## 8.4 构建智能文档问答助手",
+   "## 8.3 RAG系统：知识检索增强",
+   "## 7.3 框架接口实现"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": null,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 8,
+  "name": "工具协同",
+  "style": "oral",
+  "q": "敲命令查出来的东西，怎么顺手存进记忆和笔记里",
+  "sec": "## 9.5 ",
+  "subs": [
+   "9.5.4"
+  ],
+  "picks": [
+   "## 9.5 TerminalTool：即时文件系统访问",
+   "## 9.4 NoteTool：结构化笔记",
+   "## 8.2 记忆系统：让智能体拥有记忆"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 9,
+  "name": "GRPO配置",
+  "style": "oral",
+  "q": "组内比较那套训练，实际跑起来要配哪些参数",
+  "sec": "## 11.4 ",
+  "subs": [
+   "11.4.2"
+  ],
+  "picks": [
+   "## 11.4 GRPO 训练",
+   "## 11.6 完整训练流程实战",
+   "## 11.2 数据集与奖励函数"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 10,
+  "name": "对话UI",
+  "style": "oral",
+  "q": "游戏里跟NPC打字聊天的那个框怎么搭",
+  "sec": "## 15.6 ",
+  "subs": [
+   "15.6.2"
+  ],
+  "picks": [
+   "## 15.6 前后端通信实现",
+   "## 15.5 Godot 游戏场景构建",
+   "## 15.2 NPC 智能体系统"
+  ],
+  "routed": true,
+  "raw_sec": 2,
+  "raw_sub": 2,
+  "rw_sec": 2,
+  "rw_sub": 2,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 11,
+  "name": "智能体循环",
+  "style": "indirect",
+  "q": "它不是一个动作就完事，而是跟环境来回转圈，这个圈分哪几个阶段",
+  "sec": "## 1.2 ",
+  "subs": [
+   "1.2.2"
+  ],
+  "picks": [
+   "## 1.2 智能体的构成与运行原理",
+   "## 1.3 动手体验：5 分钟实现第一个智能体",
+   "## 4.2 ReAct"
+  ],
+  "routed": true,
+  "raw_sec": 3,
+  "raw_sub": 3,
+  "rw_sec": 2,
+  "rw_sub": 2,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 12,
+  "name": "心智社会影响",
+  "style": "indirect",
+  "q": "几十年前那个「智能是一群小角色凑出来」的说法，后来在哪个方向上被真正用上了",
+  "sec": "## 2.3 ",
+  "subs": [
+   "2.3.3"
+  ],
+  "picks": [
+   "## 2.3 马文·明斯基的心智社会",
+   "## 6.2 框架一：AutoGen",
+   "## 13.3 多智能体协作设计"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 13,
+  "name": "开发团队",
+  "style": "indirect",
+  "q": "让几个AI分别扮产品、开发、测试，凑成一个小组把一个网站做出来",
+  "sec": "## 6.2 ",
+  "subs": [
+   "6.2.2"
+  ],
+  "picks": [
+   "## 6.2 框架一：AutoGen",
+   "## 6.4 框架三：CAMEL",
+   "## 13.3 多智能体协作设计"
+  ],
+  "routed": true,
+  "raw_sec": 3,
+  "raw_sub": 3,
+  "rw_sec": 3,
+  "rw_sub": 3,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 14,
+  "name": "三步流程",
+  "style": "indirect",
+  "q": "用节点和边串一个先听懂、再查、最后答的小流程",
+  "sec": "## 6.5 ",
+  "subs": [
+   "6.5.2"
+  ],
+  "picks": [
+   "## 6.5 框架四：LangGraph",
+   "## 4.3 Plan-and-Solve",
+   "## 7.4 Agent范式的框架化实现"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 15,
+  "name": "本地推理",
+  "style": "indirect",
+  "q": "不想走云端，让模型跑在自己机器上，还得扛住一批并发",
+  "sec": "## 7.2 ",
+  "subs": [
+   "7.2.2"
+  ],
+  "picks": [
+   "## 3.2 与大语言模型交互",
+   "## 6.3 框架二：AgentScope",
+   "## 11.6 完整训练流程实战"
+  ],
+  "routed": false,
+  "raw_sec": null,
+  "raw_sub": null,
+  "rw_sec": null,
+  "rw_sub": null,
+  "all_sec": null,
+  "all_sub": null
+ },
+ {
+  "n": 16,
+  "name": "RAG分层",
+  "style": "indirect",
+  "q": "把外挂知识库那套拆开，从上到下分成几层",
+  "sec": "## 8.3 ",
+  "subs": [
+   "8.3.4"
+  ],
+  "picks": [
+   "## 8.3 RAG系统：知识检索增强",
+   "## 8.2 记忆系统：让智能体拥有记忆",
+   "## 9.1 什么是上下文工程"
+  ],
+  "routed": true,
+  "raw_sec": null,
+  "raw_sub": null,
+  "rw_sec": null,
+  "rw_sub": null,
+  "all_sec": 1,
+  "all_sub": null
+ },
+ {
+  "n": 17,
+  "name": "MCP生态",
+  "style": "indirect",
+  "q": "现成的工具服务别人早就写好了，上哪儿去找",
+  "sec": "## 10.2 ",
+  "subs": [
+   "10.2.5"
+  ],
+  "picks": [
+   "## 10.2 MCP 协议实战",
+   "## 10.5 构建自定义 MCP 服务器",
+   "## 10.1 智能体通信协议基础"
+  ],
+  "routed": true,
+  "raw_sec": null,
+  "raw_sub": null,
+  "rw_sec": null,
+  "rw_sub": null,
+  "all_sec": 1,
+  "all_sub": null
+ },
+ {
+  "n": 18,
+  "name": "评估方法",
+  "style": "indirect",
+  "q": "判断一批机器造出来的题目靠不靠谱，有哪几种打法",
+  "sec": "## 12.4 ",
+  "subs": [
+   "12.4.1"
+  ],
+  "picks": [
+   "## 12.4 数据生成质量评估",
+   "## 11.2 数据集与奖励函数",
+   "## 12.1 智能体评估基础"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 19,
+  "name": "请求封装",
+  "style": "indirect",
+  "q": "前端调后端的那些请求，怎么统一包一层、超时设多长",
+  "sec": "## 13.5 ",
+  "subs": [
+   "13.5.3"
+  ],
+  "picks": [
+   "## 13.5 前端开发详解",
+   "## 15.6 前后端通信实现",
+   "## 13.6 功能实现详解"
+  ],
+  "routed": true,
+  "raw_sec": 3,
+  "raw_sub": null,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ },
+ {
+  "n": 20,
+  "name": "Fork仓库",
+  "style": "indirect",
+  "q": "把老师那个仓库复制一份到自己账号下，之后还要能同步更新",
+  "sec": "## 16.3 ",
+  "subs": [
+   "16.3.2"
+  ],
+  "picks": [
+   "## 16.3 开发环境准备",
+   "## 16.5 提交 Pull Request",
+   "## 16.4 项目开发指南"
+  ],
+  "routed": true,
+  "raw_sec": 1,
+  "raw_sub": 1,
+  "rw_sec": 1,
+  "rw_sub": 1,
+  "all_sec": 1,
+  "all_sub": 1
+ }
+]
