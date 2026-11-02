@@ -17,7 +17,7 @@ import sys
 
 from eval import chunks
 from llm import ask_llm, load_key
-from exp_subsel import subs_of, SYSTEM
+from exp.subsel import subs_of, SYSTEM
 
 TPL = (
     "这是一本关于智能体（Agent）的技术书，下面是几个章节各自的小节清单。\n\n%s\n\n"

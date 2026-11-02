@@ -20,7 +20,7 @@ from route import route, MENU
 
 def old_hit(q, want):
     """旧目录（缓存里的结果）有没有选中正确章节"""
-    path = "route_cache.json"
+    path = "archive/route_cache.json"
     if not os.path.exists(path):
         return None
     cache = json.load(open(path, encoding="utf-8"))

@@ -1,7 +1,7 @@
 """极短口语档：用正式链路（rewrite.search_multi + route.route）复验
 
 eval_oral.py 只测了「原问 / 改写」两条路，没带路由。
-exp_route_bonus.py 带路由，但它用的是 exp_route.search_routed（老实现），
+exp/router_bonus.py 带路由，但它用的是 exp/router_accuracy 里的 search_routed（老实现），
 而正式代码里路由章节挑块已经改成「前 2 块 + 余弦最高 1 块」。
 所以这里用正式代码重测一遍，才是当前系统的真实成绩。
 """

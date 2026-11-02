@@ -36,9 +36,9 @@ from eval import CASES as DEV_Q, SUBS as DEV_SUB
 
 def load_old():
     """旧目录问出来的 pick：按问题号存"""
-    if not os.path.exists("route_cache.json"):
+    if not os.path.exists("archive/route_cache.json"):
         return {}
-    return json.load(open("route_cache.json", encoding="utf-8"))
+    return json.load(open("archive/route_cache.json", encoding="utf-8"))
 
 
 def run(name, cases, key, old):

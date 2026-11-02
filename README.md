@@ -6,7 +6,28 @@
 
 语料是一本开源技术书《Hello-Agents》的全部 16 章 Markdown（切 1177 块），自建 103 题四套基准，口径是**小节级 Recall@1/@3**（`8.3.4` 这一节，不是「章」——章对了块错了不算成功）。
 
-结论一句话：**决定效果的是「先圈对范围」，不是排序；而分级的圈范围比一次圈到底更容易犯错。**
+## 结论
+
+| h3 干净集（20 题，唯一没被调整污染过） | 小节@1 | 小节@3 |
+|---|---|---|
+| 旧：章节路由（79 章里选 3 → 再在章内选小节） | 0.700 | 0.700 |
+| **新：小节直选（287 个小节里选 3，章节号由小节号反推）** | **0.950** | **1.000** |
+
+四套题全表见 **⑧**，**零退化**。比数字更值钱的是一条教训：
+
+> **分级检索的前提是「上一级不漏」。漏了就是放大器，不是省时间。**
+
+## 先看这四个
+
+| 想看什么 | 从哪开始 |
+|---|---|
+| 数字能不能复现 | `python reproduce.py` —— 零依赖、约 1 秒、不调 API |
+| 完整问答链路 | `answer.py` → `route.py` → `rewrite.py` |
+| 改动本身讲的是什么 | 本文件 **⑧** 节 |
+| 踩过哪些坑 | 「已知局限」+ `exp/`（22 个一次性对照，每次结论的证据） |
+
+根目录 31 个 `.py` 分三层：**生产链路 7 个**（`answer` `route` `rewrite` `eval` `llm` `embed` `build_chunks`）、**评测与复现 24 个**、**一次性实验 25 个**（都在 `exp/` 和 `bench/` 里）。读代码只需要看第一层，完整清单见末尾[「文件对照」](#文件对照)。
+
 
 
 ---
@@ -209,7 +230,7 @@ corpus/*.md
 
 **同时暴露了一个必须写下来的问题：同一配置跑两次，@1 是 0.884 和 0.907。** 差一题。因为路由要调 LLM，判别有非确定性，而 43 题里一题就是 2.3 个点。所以本仓库里 1~2 题的差异都不该被当成真实提升——这条比上面所有加分都重要。
 
-### ⑦ 路由准确率就是排序的上限（`exp_route_bonus.py`）
+### ⑦ 路由准确率就是排序的上限（`exp/router_bonus.py`）
 
 排序再好也超不过路由选对的概率。13 题极短口语档上单独量了一次：
 
@@ -280,7 +301,7 @@ bonus 单独扫（同一批 13 题）：0.30 → 0.692 / 0.846、0.60 → 0.769 
 
 ---
 
-### ⑨ 放大到一百万块：先崩的不是延迟，是内存（`bench_scale.py`）
+### ⑨ 放大到一百万块：先崩的不是延迟，是内存（`bench/scale.py`）
 
 ⑧ 的结论是「瓶颈不在参数」。数据层就是下一个要问的地方：**这套暴力检索能撑到多大？**
 
@@ -410,31 +431,62 @@ python api.py --no-route # 不调 LLM，只用检索（不需要 key）
 
 ## 文件对照
 
+### 第一层：生产链路（7 个）
+
 | 文件 | 作用 |
 |---|---|
-| `build_chunks.py` | 切块：按标题层级 / 段落二次拆 / 代码按函数切 / 噪声过滤 |
-| `embed.py` | 向量化，产出 `chunks_vec.npy` |
-| `eval.py` | 粗筛 + 精排，43 题基准 `CASES` 也在这里 |
-| `search.py` | 21 行的最小检索实现，用来理解底层发生了什么 |
-| `rewrite.py` | 查询改写 + 候选扩充 + 本地缓存 |
-| `abstain.py` | 三档阴性样本 + 阈值扫描 |
 | `answer.py` | 端到端入口，带引用标注和引用越界检查 |
-| `llm.py` | 唯一的模型调用层（抽出这一层是因为 `answer` 和 `rewrite` 相互 import 会死锁） |
 | `route.py` | 路由：`route_allsubs` 在 287 个小节里选 3 个（v1.0 默认）；`route` 是旧的两级版本，`ROUTE_MODE=sec` 切回去 |
-| `subs_index.json` | 章节 → 小节清单（路由目录的来源，书变了要重跑 `build_subs.py`） |
-| `reproduce.py` | **零依赖复现 README ⑧ 那张表**，只用标准库，不下载模型、不调 API |
-| `bench_scale.py` | ⑨ 的规模实验：合成标定数据 + numpy/faiss 三引擎对照（需要 `faiss-cpu`） |
-| `answers_43.json` | ⑩ 的 20 题参考答案：每题 2-4 条必须出现的事实点 + 原文出处 |
-| `eval_answer.py` | ⑩ 的评测：引用命中（客观）+ 要点覆盖（判分）+ 三档拒答 |
-| `build_demo.py` | ⑪ 生成 `demo.html`：逐题对照旧章节路由与新小节直选 |
-| `api.py` | ⑪ 检索服务（标准库）：`/healthz`、`/search`，不生成、不下放 key |
+| `rewrite.py` | 查询改写 + 候选扩充 + 本地缓存 |
+| `eval.py` | 粗筛 + 精排，43 题基准 `CASES` 也在这里 |
+| `llm.py` | 唯一的模型调用层（抽出这一层是因为 `answer` 和 `rewrite` 相互 import 会死锁） |
+| `embed.py` | 向量化，产出 `chunks_vec.npy` |
+| `build_chunks.py` | 切块：按标题层级 / 段落二次拆 / 代码按函数切 / 噪声过滤。**名字像构建脚本，其实是 `eval.py` 的硬依赖** |
+
+### 第二层：复现、评测与入口（24 个）
+
+| 文件 | 作用 |
+|---|---|
+| `reproduce.py` | **零依赖复现 ⑧ 那张表**，只用标准库，不下载模型、不调 API |
+| `api.py` | ⑪ 检索服务（标准库）：`/healthz`、`/search`，只检索不生成 |
+| `build_demo.py` | ⑪ 生成 `demo.html` 与 `docs/index.html`：逐题对照旧章节路由与新小节直选 |
 | `build_meta.py` | 生成 `chunks_meta.json`（块 id → 标题/所属小节），给 `reproduce.py` 用 |
+| `build_subs.py` | 生成 `subs_index.json`，路由目录的来源 |
 | `eval_sub2.py` | 小节直选的验收：选得准不准 + 候选池落盘 |
 | `eval_relay.py` | 换路由不重跑精排（拦 `reranker.predict` 换缓存），83 题 48 分钟 → 43 秒 |
-| `exp_allsubs.py` | 全量小节直选的准确率测量（首选 0.950 / 前三 1.000） |
-| `exp_subpool*.py` | 上限实验：假设小节选对，看理论最高分 |
-| `exp_route.py` | 路由本身的准确率测量（@3 命中 12/13） |
+| `eval_answer.py` | ⑩ 的评测：引用命中（客观）+ 要点覆盖（判分）+ 三档拒答 |
+| `eval_holdout{,2,3}.py` | 三批留出集（各 20 题）的完整链路评测 |
 | `eval_combo.py` | 43 题 A/B：改写 vs 改写 + 路由 |
-| `eval_bonus05*.log` | bonus 扫描记录，`ROUTE_BONUS` 的历史来源 |
-| `eval_oral_combo.py` | 极短口语档 13 题的三档对照 |
-| `exp_*.py` | 各组对照实验，可单独运行 |
+| `eval_sub.py` | 两级方案（章 → 章内小节）的验收；已废弃，保留作对照 |
+| `eval_level.py` / `eval_oral_*.py` / `eval_style.py` | 不同口径的分组统计：节级 / 极短口语 / 按题型 |
+| `abstain.py` | 三档阴性样本 + 阈值扫描 |
+| `search.py` | 21 行的最小检索实现，用来理解底层发生了什么 |
+| `metrics.py` | MRR 等指标 |
+| `dump_pools.py` | 把候选池留档，之后扫参数从分钟降到毫秒 |
+| `profile_one.py` | 单题耗时拆解 |
+| `refresh_route.py` | 目录改了之后强制重算路由（否则吃旧缓存，看起来像「改了没效果」） |
+
+### 第三层：一次性实验（`exp/` 22 个 + `bench/` 3 个）
+
+这些不是运行路径，是「当时为什么下这个结论」的证据。都是包，用 `-m` 跑：
+
+```bash
+python -m exp.allrank h3        # 加分策略对比
+python -m exp.subpool           # 上限实验：假设小节选对，看理论最高分
+python -m bench.scale --n 1e6   # 规模实验（需要 faiss-cpu）
+```
+
+> import 相对仓库根写的，直接 `python exp/allrank.py` 会找不到 `eval`。
+
+| 文件 | 当年在验什么 |
+|---|---|
+| `exp/router_accuracy.py` | 路由本身的准确率（@3 命中 12/13） |
+| `exp/router_bonus.py` | `ROUTE_BONUS` 该给多强 |
+| `exp/subpool.py` / `exp/subpool2.py` | 上限实验：把正确小节补齐，看理论天花板 |
+| `exp/allsubs.py` | 全量小节直选的准确率（首选 0.950 / 前三 1.000） |
+| `exp/hint.py` / `exp/alias.py` | 口语别名与反查词的对照（结论：反查词没赚） |
+| `exp/pick_mode.py` / `exp/subbonus.py` | `route_pick` 三档与小节加分的分级策略 |
+| `exp/conf.py` / `exp/gate_scan.py` | 置信度门控与阈值扫描 |
+| `exp/` 其余 | 各次加减法的对照，文件头都写了「为什么要试这个」 |
+| `bench/scale.py` | ⑨ 的规模实验：合成标定数据 + numpy/faiss 三引擎对照 |
+| `bench/speed.py` / `bench/rerank2.py` | 全链路耗时与精排耗时拆解 |

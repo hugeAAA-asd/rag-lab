@@ -48,9 +48,9 @@ ppc 是被间隔钉住的：8 太小（第 10 名跨出簇，间隔 .378），16
 
 用法
 ----
-    python bench_scale.py                      # 1e4 / 1e5 / 5e5
-    python bench_scale.py --n 1e6 --ef 8 32 64
-    python bench_scale.py --out bench_scale_result.json
+    python -m bench.scale                      # 1e4 / 1e5 / 5e5
+    python -m bench.scale --n 1e6 --ef 8 32 64
+    python -m bench.scale --out bench_scale_result.json
 """
 import argparse
 import gc
