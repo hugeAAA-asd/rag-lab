@@ -294,8 +294,13 @@ document.getElementById("go").onclick = async () => {
         <div style="margin-bottom:6px">${h.sub.map(s => `<span class="chip">${s}</span>`).join("")}</div>
         <div class="snip">${h.snippet}…</div></div>`).join("");
   } catch (e) {
-    out.innerHTML = `<div class="empty">调不通：${e.message}<br>
-      先在本目录运行 <span class="mono">python api.py</span>，再用 http://127.0.0.1:8000 打开本页。</div>`;
+    // 这个页面会同时挂在 GitHub Pages 上，那里没有后端，/search 必然 404。
+    // 所以别把「调不通」写成报错——在线访客看到红字会以为站点坏了。
+    // 说清分工：在线版看对照数据，现场检索要本机跑服务。
+    out.innerHTML = `<div class="empty">现场检索需要一个后端，这个静态页上没有。<br>
+      上面的对照数据是离线算好的，照常可看；想试检索请在本机
+      <span class="mono">python api.py</span> 后访问 http://127.0.0.1:8000。<br>
+      <span style="opacity:.6">（${e.message}）</span></div>`;
   } finally { btn.disabled = false; }
 };
 
@@ -315,4 +320,10 @@ if __name__ == "__main__":
     open("demo.html", "w", encoding="utf-8").write(html)
     json.dump(cases, open("demo_cases.json", "w", encoding="utf-8"),
               ensure_ascii=False)
-    print("写入 demo.html（%.0f KB）和 demo_cases.json" % (len(html) / 1024))
+
+    # 同一份内容再写一份到 docs/：GitHub Pages 从 /docs 发布。
+    # 不把 index.html 放根目录——那会和仓库首页抢路径，且根目录该留给源码。
+    os.makedirs("docs", exist_ok=True)
+    open(os.path.join("docs", "index.html"), "w", encoding="utf-8").write(html)
+    print("写入 demo.html 和 docs/index.html（各 %.0f KB），以及 demo_cases.json"
+          % (len(html) / 1024))
